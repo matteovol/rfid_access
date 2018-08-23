@@ -21,9 +21,9 @@ class Register(Page):
     """Register page. The inscription form must be fully completed to register someone"""
 
     def __init__(self, *args, **kwargs):
-        global var_age, var_class, var_first, var_name
+        global var_age, var_class, var_first, var_name, image_list
         Page.__init__(self, *args, **kwargs)
-
+        image_list = [];
         # Declare all label of the inscription form
         label_name = tk.Label(self, text="Nom:", font=BIG_FONT)
         label_first = tk.Label(self, text="Prénom:", font=BIG_FONT)
@@ -56,13 +56,14 @@ class Register(Page):
         combo.insert(6, "Terminale")
         combo.insert(7, "Autre")
 
-        # create the image frame
+        # create the image frame and canvas
         frame = tk.Frame(self, bd=2, relief=tk.RAISED, height=400, width=300, bg="gray")
+        can = tk.Canvas(frame, width=300, height=400)
         frame.grid_propagate(0)
 
         # Buttons present in this page
         button_valid = tk.Button(self, text="Valider", command=self.validate_entry, font=BIG_FONT)
-        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(frame), font=BIG_FONT)
+        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can), font=BIG_FONT)
 
         # Print all elements on the Register frame
         label_name.place(in_=self, x=100, y=80)
@@ -76,6 +77,7 @@ class Register(Page):
         button_valid.place(in_=self, x=150, y=440)
         frame.place(in_=self, x=600, y=50)
         button_open.place(in_=self, x=623, y=470)
+        can.pack()
 
     @staticmethod
     def validate_entry():
@@ -94,17 +96,20 @@ class Register(Page):
             print(name, first, age, class_)
 
     @staticmethod
-    def open_pic(frame):
+    def open_pic(can):
         """Open an image"""
         file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif"), ("all files", ".*")])
         if len(file_name) > 1:
+            try:
+                can.delete(image_list[0])
+            except IndexError:
+                pass
             ext = file_name[len(file_name) - 4:]
             print("'" + file_name + "' '" + ext + "'")
             pics = ImageTk.PhotoImage(file=file_name)
-            can = tk.Canvas(frame, width=pics.width(), height=pics.height())
-            can.create_image(0, 0, image=pics, anchor=tk.NW)
+            can.config(width=pics.width(), height=pics.height())
+            image_list.append(can.create_image(0, 0, image=pics, anchor=tk.NW))
             can.image = pics
-            can.pack()
 
 
 class List(Page):
