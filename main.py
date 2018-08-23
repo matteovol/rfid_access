@@ -3,9 +3,9 @@ import tkinter.messagebox as ms
 import tkinter.tix as tix
 import tkinter.filedialog as fd
 import tkinter.font as font
+from PIL import ImageTk
 
 BIG_FONT = "arial 20"
-MEDUIM_FONT = "arial 20"
 
 
 class Page(tk.Frame):
@@ -25,10 +25,10 @@ class Register(Page):
         Page.__init__(self, *args, **kwargs)
 
         # Declare all label of the inscription form
-        label_name = tk.Label(self, text="Nom:", font=MEDUIM_FONT)
-        label_first = tk.Label(self, text="Prénom:", font=MEDUIM_FONT)
-        label_age = tk.Label(self, text="Age:", font=MEDUIM_FONT)
-        label_class = tk.Label(self, text="Classe:", font=MEDUIM_FONT)
+        label_name = tk.Label(self, text="Nom:", font=BIG_FONT)
+        label_first = tk.Label(self, text="Prénom:", font=BIG_FONT)
+        label_age = tk.Label(self, text="Age:", font=BIG_FONT)
+        label_class = tk.Label(self, text="Classe:", font=BIG_FONT)
         label_name.focus_set()
 
         # StringVar to get the values set in the inscription form
@@ -38,9 +38,9 @@ class Register(Page):
         var_class = tk.StringVar()
 
         # Entry text to fill form
-        entry_name = tk.Entry(self, textvariable=var_name, font=MEDUIM_FONT)
-        entry_first = tk.Entry(self, textvariable=var_first, font=MEDUIM_FONT)
-        entry_age = tk.Entry(self, textvariable=var_age, font=MEDUIM_FONT)
+        entry_name = tk.Entry(self, textvariable=var_name, font=BIG_FONT)
+        entry_first = tk.Entry(self, textvariable=var_first, font=BIG_FONT)
+        entry_age = tk.Entry(self, textvariable=var_age, font=BIG_FONT)
 
         # Dropdown list to chose the student's
         bigfont = font.Font(family="Arial", size=15)
@@ -61,8 +61,8 @@ class Register(Page):
         frame.grid_propagate(0)
 
         # Buttons present in this page
-        button_valid = tk.Button(self, text="Valider", command=self.validate_entry, font=MEDUIM_FONT)
-        button_open = tk.Button(self, text="Ouvrir une photo", command=lambda: self.open_pic(frame), font=MEDUIM_FONT)
+        button_valid = tk.Button(self, text="Valider", command=self.validate_entry, font=BIG_FONT)
+        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(frame), font=BIG_FONT)
 
         # Print all elements on the Register frame
         label_name.place(in_=self, x=100, y=80)
@@ -75,7 +75,7 @@ class Register(Page):
         combo.place(in_=self, x=100, y=390)
         button_valid.place(in_=self, x=150, y=440)
         frame.place(in_=self, x=600, y=50)
-        button_open.place(in_=self, x=700, y=470)
+        button_open.place(in_=self, x=623, y=470)
 
     @staticmethod
     def validate_entry():
@@ -96,11 +96,15 @@ class Register(Page):
     @staticmethod
     def open_pic(frame):
         """Open an image"""
-        file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("png files", ".png"), ("all files", ".*")])
-        pics = tk.PhotoImage(file=file_name)
-        can = tk.Canvas(frame, width=pics.width(), height=pics.height(), bg="white")
-        can.create_image(0, 0, image=pics, anchor=tk.NW)
-        can.pack()
+        file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif"), ("all files", ".*")])
+        if len(file_name) > 1:
+            ext = file_name[len(file_name) - 4:]
+            print("'" + file_name + "' '" + ext + "'")
+            pics = ImageTk.PhotoImage(file=file_name)
+            can = tk.Canvas(frame, width=pics.width(), height=pics.height())
+            can.create_image(0, 0, image=pics, anchor=tk.NW)
+            can.image = pics
+            can.pack()
 
 
 class List(Page):
