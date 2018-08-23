@@ -4,6 +4,7 @@ import tkinter.tix as tix
 import tkinter.filedialog as fd
 import tkinter.font as font
 from PIL import ImageTk
+from PIL import Image
 
 BIG_FONT = "arial 20"
 
@@ -104,12 +105,18 @@ class Register(Page):
                 can.delete(image_list[0])
             except IndexError:
                 pass
-            ext = file_name[len(file_name) - 4:]
-            print("'" + file_name + "' '" + ext + "'")
-            pics = ImageTk.PhotoImage(file=file_name)
-            can.config(width=pics.width(), height=pics.height())
-            image_list.append(can.create_image(0, 0, image=pics, anchor=tk.NW))
-            can.image = pics
+            print("'" + file_name + "'")
+            try:
+                pics = Image.open(file_name)
+            except:
+                ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer le logiciel")
+            if pics.width > 300:
+                ratio = pics.width / 300
+                pics = pics.resize((300, int(pics.height / ratio)), Image.ANTIALIAS)
+            pics_resized = ImageTk.PhotoImage(pics)
+            can.config(width=pics_resized.width(), height=pics_resized.height())
+            image_list.append(can.create_image(0, 0, image=pics_resized, anchor=tk.NW))
+            can.image = pics_resized
 
 
 class List(Page):
