@@ -2,9 +2,10 @@ import tkinter as tk
 import tkinter.messagebox as ms
 import tkinter.tix as tix
 import tkinter.filedialog as fd
+import tkinter.font as font
 
 BIG_FONT = "arial 20"
-MEDUIM_FONT = "arial 15"
+MEDUIM_FONT = "arial 20"
 
 
 class Page(tk.Frame):
@@ -42,8 +43,10 @@ class Register(Page):
         entry_age = tk.Entry(self, textvariable=var_age, font=MEDUIM_FONT)
 
         # Dropdown list to chose the student's
+        bigfont = font.Font(family="Arial", size=15)
         combo = tix.ComboBox(self, editable=1, dropdown=1, variable=var_class)
         combo.entry.config(state="readonly")
+        root.option_add("TCombobox*Listbox*Font", bigfont)
         combo.insert(0, "6ème")
         combo.insert(1, "5ème")
         combo.insert(2, "4ème")
@@ -53,21 +56,26 @@ class Register(Page):
         combo.insert(6, "Terminale")
         combo.insert(7, "Autre")
 
+        # create the image frame
+        frame = tk.Frame(self, bd=2, relief=tk.RAISED, height=400, width=300, bg="gray")
+        frame.grid_propagate(0)
+
         # Buttons present in this page
         button_valid = tk.Button(self, text="Valider", command=self.validate_entry, font=MEDUIM_FONT)
-        button_open = tk.Button(self, text="Ouvrir une photo", command=self.open_pic, font=MEDUIM_FONT)
+        button_open = tk.Button(self, text="Ouvrir une photo", command=lambda: self.open_pic(frame), font=MEDUIM_FONT)
 
         # Print all elements on the Register frame
-        label_name.place(in_=self, x=100, y=100)
-        entry_name.place(in_=self, x=100, y=130)
-        # label_first.grid(row=3, column=0)
-        # entry_first.grid(row=4, column=0)
-        # label_age.grid(row=5, column=0)
-        # entry_age.grid(row=6, column=0)
-        # label_class.grid(row=7, column=0)
-        # combo.grid(row=9, column=0)
-        # button_valid.grid(row=10, column=0)
-        # button_open.grid(row=1, column=1)
+        label_name.place(in_=self, x=100, y=80)
+        entry_name.place(in_=self, x=100, y=120)
+        label_first.place(in_=self, x=100, y=170)
+        entry_first.place(in_=self, x=100, y=210)
+        label_age.place(in_=self, x=100, y=260)
+        entry_age.place(in_=self, x=100, y=300)
+        label_class.place(in_=self, x=100, y=350)
+        combo.place(in_=self, x=100, y=390)
+        button_valid.place(in_=self, x=150, y=440)
+        frame.place(in_=self, x=600, y=50)
+        button_open.place(in_=self, x=700, y=470)
 
     @staticmethod
     def validate_entry():
@@ -86,15 +94,13 @@ class Register(Page):
             print(name, first, age, class_)
 
     @staticmethod
-    def open_pic():
+    def open_pic(frame):
         """Open an image"""
         file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("png files", ".png"), ("all files", ".*")])
         pics = tk.PhotoImage(file=file_name)
-        frame = tk.Frame(reg, bd=2, relief=tk.RAISED)
-        frame.grid(row=1, column=2)
         can = tk.Canvas(frame, width=pics.width(), height=pics.height(), bg="white")
         can.create_image(0, 0, image=pics, anchor=tk.NW)
-        can.grid(row=1, column=2)
+        can.pack()
 
 
 class List(Page):
@@ -179,6 +185,7 @@ class App(tk.Frame):
 
 
 if __name__ == "__main__":
+    global root
     # Setup the main window
     root = tix.Tk()
     root.title("Gestion des usagers")
