@@ -45,7 +45,7 @@ class App(tk.Frame):
 
 if __name__ == "__main__":
     # Setup the main window
-    root = tix.Tk()
+    root = tk.Tk()
     root.title("Gestion des usagers")
     root.geometry("1280x720")
     root.resizable(width=False, height=False)

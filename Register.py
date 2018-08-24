@@ -1,6 +1,6 @@
 import tkinter.messagebox as ms
 import tkinter.filedialog as fd
-import tkinter.tix as tix
+import tkinter.ttk as ttk
 from PIL import ImageTk
 from PIL import Image
 from Page import *
@@ -34,16 +34,8 @@ class Register(Page):
         entry_age = tk.Entry(self, textvariable=var_age, font=BIG_FONT)
 
         # Dropdown list to chose the student's
-        combo = tix.ComboBox(self, editable=1, dropdown=1, variable=var_class)
-        combo.entry.config(state="readonly")
-        combo.insert(0, "6ème")
-        combo.insert(1, "5ème")
-        combo.insert(2, "4ème")
-        combo.insert(3, "3ème")
-        combo.insert(4, "Seconde")
-        combo.insert(5, "Première")
-        combo.insert(6, "Terminale")
-        combo.insert(7, "Autre")
+        values = ["6ème", "5ème", "4ème", "3ème", "Seconde", "Première", "Terminale", "Autre"]
+        combo = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_class, values=values, state="readonly")
 
         # create the image frame and canvas
         frame = tk.Frame(self, bd=2, relief=tk.RAISED, height=400, width=300, bg="gray")
