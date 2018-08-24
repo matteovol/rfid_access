@@ -46,8 +46,14 @@ class App(tk.Frame):
 if __name__ == "__main__":
     # Setup the main window
     root = tk.Tk()
-    root.title("Gestion des usagers")
-    root.geometry("1280x720")
+    root.title("Identification RFID")
+    width = 1280
+    height = 720
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws / 2) - (width / 2)
+    y = (hs / 2) - (height / 2)
+    root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
     root.iconbitmap("questhead")
     main = App(root)
