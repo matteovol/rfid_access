@@ -5,17 +5,16 @@ from PIL import ImageTk
 from PIL import Image
 from Page import *
 
-BIG_FONT = "arial 20"
-
 
 class Register(Page):
 
     """Register page. The inscription form must be fully completed to register someone"""
 
     def __init__(self, *args, **kwargs):
-        global var_age, var_class, var_first, var_name, image_list
+        global var_age, var_class, var_first, var_name, image_list, file_name
         Page.__init__(self, *args, **kwargs)
         image_list = []
+        file_name = ""
         # Declare all label of the inscription form
         label_name = tk.Label(self, text="Nom:", font=BIG_FONT)
         label_first = tk.Label(self, text="Prénom:", font=BIG_FONT)
@@ -64,9 +63,9 @@ class Register(Page):
         entry_age.place(in_=self, x=100, y=300)
         label_class.place(in_=self, x=100, y=350)
         combo.place(in_=self, x=100, y=390)
-        button_valid.place(in_=self, x=150, y=440)
         frame.place(in_=self, x=600, y=50)
         button_open.place(in_=self, x=623, y=470)
+        button_valid.place(in_=self, x=150, y=540)
         can.pack()
 
     @staticmethod
@@ -76,7 +75,7 @@ class Register(Page):
         first = var_first.get()
         age = var_age.get()
         class_ = var_class.get()
-        if len(name) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1:
+        if len(name) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1:
             ms.showerror("Error", "Veuillez remplir tout les champs avant de valider l'inscription")
         else:
             try:
@@ -88,7 +87,8 @@ class Register(Page):
     @staticmethod
     def open_pic(can):
         """Open an image"""
-        file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif"), ("all files", ".*")])
+        global file_name
+        file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif")])
         if len(file_name) > 1:
             try:
                 can.delete(image_list[0])
@@ -107,4 +107,5 @@ class Register(Page):
                 pics.save(file_name[:len(file_name) - 4] + "_resized" + file_name[len(file_name) - 4:])
                 pics.close()
             except IOError:
-                ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer le logiciel")
+                ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer"
+                                      " le logiciel")
