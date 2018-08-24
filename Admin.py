@@ -58,6 +58,7 @@ class Admin(Page):
     def ask_password(self):
         _password = ""
         win_pass = tk.Tk()
+        win_pass.title("")
         width = 200
         height = 100
         ws = win_pass.winfo_screenwidth()
@@ -66,7 +67,7 @@ class Admin(Page):
         y = (hs / 2) - (height / 2)
         win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
         win_pass.resizable(height=False, width=False)
-        win_pass.iconbitmap("questhead")
+        win_pass.iconbitmap("ressources/icon.ico")
         pwd_entry = tk.Entry(win_pass, show='*')
 
         def on_pwd_entry(_evt):

@@ -55,7 +55,7 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    root.iconbitmap("questhead")
+    root.iconbitmap("ressources/icon.ico")
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
     root.mainloop()
