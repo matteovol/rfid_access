@@ -6,6 +6,7 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
+        global listbox, var_add, var_del
         Page.__init__(self, *args, **kwargs)
 
         # Init invisible frame to place correctly the list
@@ -18,7 +19,7 @@ class List(Page):
         scroll = tk.Scrollbar(self, orient=tk.VERTICAL)
         scroll.grid(row=1, column=2, sticky=tk.NS, rowspan=50)
         listbox = tk.Listbox(self, yscrollcommand=scroll.set, width=50, height=16, font=BIG_FONT)
-        for i in range(1000):
+        for i in range(10):
             listbox.insert(tk.END, str(i))
         listbox.grid(row=1, column=1, rowspan=50)
         scroll.config(command=listbox.yview)
@@ -57,8 +58,21 @@ class List(Page):
         entry_del.grid(row=7, column=4)
         button_del.grid(row=9, column=4)
 
-    def add_to_list(self):
-        pass
+        new_order = (entry_add, button_add, entry_del, button_del)
+        for w in new_order:
+            w.lift()
 
-    def del_from_list(self):
-        pass
+    @staticmethod
+    def add_to_list():
+        listbox.insert(tk.END, var_add.get())
+
+    @staticmethod
+    def del_from_list():
+        to_del = var_del.get()
+        size = listbox.size()
+        list_values = listbox.get(0, size)
+        i = 0
+        while i < size:
+            if list_values[i] == to_del:
+                listbox.delete(i)
+            i += 1

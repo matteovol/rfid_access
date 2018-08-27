@@ -100,4 +100,4 @@ class Register(Page):
                 pics.close()
             except IOError:
                 ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer"
-                                      " le logiciel")
+                                      + " le logiciel")

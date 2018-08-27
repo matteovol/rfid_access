@@ -33,7 +33,8 @@ class App(tk.Frame):
         reg_b = tk.Button(button_frame, text="Inscription", width=19, height=1, command=reg.lift, font=BIG_FONT)
         enum_b = tk.Button(button_frame, text="Liste", width=19, height=1, command=enum.lift, font=BIG_FONT)
         stat_b = tk.Button(button_frame, text="Statistiques", width=20, height=1, command=stat.lift, font=BIG_FONT)
-        admin_b = tk.Button(button_frame, text="Administration", width=20, height=1, command=admin.ask_password, font=BIG_FONT)
+        admin_b = tk.Button(button_frame, text="Administration", width=20, height=1, command=admin.ask_password,
+                            font=BIG_FONT)
 
         # Place all the buttons on the main windows
         reg_b.grid(row=0, column=0)
