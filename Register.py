@@ -4,7 +4,6 @@ import tkinter.ttk as ttk
 from PIL import ImageTk
 from PIL import Image
 from Page import *
-import Database as db
 import os
 
 
@@ -45,7 +44,7 @@ class Register(Page):
         frame.grid_propagate(0)
 
         # Buttons present in this page
-        button_valid = tk.Button(self, text="Valider", command=self.validate_entry, font=BIG_FONT)
+        button_valid = tk.Button(self, text="Valider", command=lambda: self.validate_entry(self), font=BIG_FONT)
         button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can), font=BIG_FONT)
 
         # Print all elements on the Register frame
@@ -68,7 +67,7 @@ class Register(Page):
             w.lift()
 
     @staticmethod
-    def validate_entry():
+    def validate_entry(self):
         """Check the entry validity and register the student"""
         name = var_name.get()
         first = var_first.get()
@@ -82,6 +81,8 @@ class Register(Page):
             except ValueError:
                 ms.showerror("Error", "Veuillez entrer un nombre dans la case \'Age\'")
             print(name, first, age, class_, final_dir)
+            bdd = Page.get_bdd(self)
+            bdd.register_user(first, name, age, class_, final_dir)
             ms.showinfo("Info", "L'inscription est validée")
 
     @staticmethod

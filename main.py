@@ -45,7 +45,7 @@ class App(tk.Frame):
 
 
 def _delete_window(ouais):
-    print("delete window", ouais)
+    pass
 
 
 if __name__ == "__main__":
@@ -66,8 +66,5 @@ if __name__ == "__main__":
 
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
-
-    bdd = db.Database()
-    bdd.create_user_table()
 
     root.mainloop()
