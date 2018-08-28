@@ -4,6 +4,8 @@ import tkinter.ttk as ttk
 from PIL import ImageTk
 from PIL import Image
 from Page import *
+import Database as db
+import os
 
 
 class Register(Page):
@@ -60,6 +62,11 @@ class Register(Page):
         button_valid.place(in_=self, x=150, y=540)
         can.pack()
 
+        # Set a new widget order
+        new_order = (entry_name, entry_first, entry_age, combo, button_open, button_valid)
+        for w in new_order:
+            w.lift()
+
     @staticmethod
     def validate_entry():
         """Check the entry validity and register the student"""
@@ -74,19 +81,22 @@ class Register(Page):
                 int(var_age.get())
             except ValueError:
                 ms.showerror("Error", "Veuillez entrer un nombre dans la case \'Age\'")
-            print(name, first, age, class_)
+            print(name, first, age, class_, final_dir)
+            ms.showinfo("Info", "L'inscription est validée")
 
     @staticmethod
     def open_pic(can):
         """Open an image"""
-        global file_name
+        global file_name, final_dir
         file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif")])
+        if len(var_name.get()) < 1 or len(var_first.get()) < 1:
+            ms.showerror("Erreur", "Veuillez d'abord remplir les champs à gauche")
+            return
         if len(file_name) > 1:
             try:
                 can.delete(image_list[0])
             except IndexError:
                 pass
-            print("'" + file_name + "'")
             try:
                 pics = Image.open(file_name)
                 if pics.width > 300:
@@ -96,7 +106,13 @@ class Register(Page):
                 can.config(width=pics_resize.width(), height=pics_resize.height())
                 image_list.append(can.create_image(0, 0, image=pics_resize, anchor=tk.NW))
                 can.image = pics_resize
-                pics.save(file_name[:len(file_name) - 4] + "_resized" + file_name[len(file_name) - 4:])
+                try:
+                    os.mkdir("pics")
+                except IOError:
+                    pass
+                cur_dir = os.getcwd()
+                final_dir = cur_dir + "\pics\\" + var_name.get() + "_" + var_first.get() + file_name[len(file_name) - 4:]
+                pics.save(final_dir)
                 pics.close()
             except IOError:
                 ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer"

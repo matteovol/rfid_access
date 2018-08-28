@@ -19,8 +19,7 @@ class List(Page):
         scroll = tk.Scrollbar(self, orient=tk.VERTICAL)
         scroll.grid(row=1, column=2, sticky=tk.NS, rowspan=50)
         listbox = tk.Listbox(self, yscrollcommand=scroll.set, width=50, height=16, font=BIG_FONT)
-        for i in range(10):
-            listbox.insert(tk.END, str(i))
+        listbox.bind('<<ListboxSelect>>', self.selection)
         listbox.grid(row=1, column=1, rowspan=50)
         scroll.config(command=listbox.yview)
 
@@ -75,4 +74,12 @@ class List(Page):
         while i < size:
             if list_values[i] == to_del:
                 listbox.delete(i)
+                break
             i += 1
+
+    @staticmethod
+    def selection(self):
+        try:
+            print(listbox.get(listbox.curselection()))
+        except tk.TclError:
+            pass

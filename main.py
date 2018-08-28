@@ -44,9 +44,14 @@ class App(tk.Frame):
         reg.show()
 
 
+def _delete_window(ouais):
+    print("delete window", ouais)
+
+
 if __name__ == "__main__":
     # Setup the main window
     root = tk.Tk()
+
     root.title("Identification RFID")
     width = 1280
     height = 720
@@ -57,6 +62,12 @@ if __name__ == "__main__":
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
     root.iconbitmap("ressources/icon.ico")
+    root.bind("<Destroy>", _delete_window)
+
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
+
+    bdd = db.Database()
+    bdd.create_user_table()
+
     root.mainloop()
