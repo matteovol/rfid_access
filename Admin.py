@@ -56,36 +56,34 @@ class Admin(Page):
             w.lift()
 
     def ask_password(self):
-        _password = ""
-        win_pass = tk.Tk()
-        win_pass.title("")
-        width = 200
-        height = 100
-        ws = win_pass.winfo_screenwidth()
-        hs = win_pass.winfo_screenheight()
-        x = (ws / 2) - (width / 2)
-        y = (hs / 2) - (height / 2)
-        win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
-        win_pass.resizable(height=False, width=False)
-        win_pass.iconbitmap("ressources/icon.ico")
-        pwd_entry = tk.Entry(win_pass, show='*')
+        bdd = Page.get_bdd(self)
+        ret = bdd.check_admin_password()
+        if ret is True:
+            _password = ""
+            win_pass = tk.Tk()
+            win_pass.title("")
+            width = 200
+            height = 100
+            ws = win_pass.winfo_screenwidth()
+            hs = win_pass.winfo_screenheight()
+            x = (ws / 2) - (width / 2)
+            y = (hs / 2) - (height / 2)
+            win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
+            win_pass.resizable(height=False, width=False)
+            win_pass.iconbitmap("ressources/icon.ico")
+            pwd_entry = tk.Entry(win_pass, show='*')
 
-        def on_pwd_entry(_evt):
-            global _password
-            _password = pwd_entry.get()
-            self.lift()
-            win_pass.destroy()
+            def on_ok():
+                global _password
+                _password = pwd_entry.get()
+                self.lift()
+                win_pass.destroy()
 
-        def on_ok_click():
-            global _password
-            _password = pwd_entry.get()
-            self.lift()
-            win_pass.destroy()
-
-        tk.Label(win_pass, text="Mot de passe:").pack()
-        pwd_entry.pack(side="top")
-        pwd_entry.bind('<Return>', on_pwd_entry)
-        tk.Button(win_pass, command=on_ok_click, text="OK").pack(side="top")
+            tk.Label(win_pass, text="Mot de passe:").pack()
+            pwd_entry.pack(side="top")
+            pwd_entry.bind('<Return>', on_ok)
+            tk.Button(win_pass, command=on_ok, text="OK").pack(side="top")
+            win_pass.mainloop()
 
     @staticmethod
     def delete_annual():
