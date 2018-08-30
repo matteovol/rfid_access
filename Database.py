@@ -16,7 +16,7 @@ class Database:
         CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY UNIQUE,
             first_name VARCHAR(50),
-            last_name VARCHAR(50),
+            last_name VARCHAR(100),
             age INT NOT NULL,
             class VARCHAR(20),
             path VARCHAR(100)
@@ -70,6 +70,10 @@ class Database:
         self.curs.execute("""SELECT last_name FROM users WHERE first_name=?""", ("admin",))
         admin_hash = self.curs.fetchone()
         return admin_hash[0]
+
+    def change_admin_password(self, passwd):
+        self.curs.execute("""UPDATE users SET last_name=? WHERE first_name='admin'""", (passwd,))
+        self.conn.commit()
 
     def close_db(self):
         self.conn.close()

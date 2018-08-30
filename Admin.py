@@ -7,6 +7,7 @@ class Admin(Page):
     """Administration page, a password is required to enter this page"""
 
     def __init__(self, *args, **kwargs):
+        global var_actual, var_new, var_confirm
         Page.__init__(self, *args, **kwargs)
 
         # Init Label
@@ -35,7 +36,7 @@ class Admin(Page):
         button_stat_ua = tk.Button(self, text="Supprimer tout les usagers", width=22, height=2, font=BIG_FONT,
                                    command=self.delete_all_users)
         button_stat_pass = tk.Button(self, text="Changer le mot de passe", width=22, font=BIG_FONT,
-                                     command=self.change_password)
+                                     command=lambda: self.change_password(self))
 
         # Place elements on screen
         button_stat_h.place(in_=self, x=100, y=100)
@@ -109,5 +110,22 @@ class Admin(Page):
         pass
 
     @staticmethod
-    def change_password():
-        pass
+    def change_password(self):
+        actual = var_actual.get()
+        new = var_new.get()
+        confirm = var_confirm.get()
+        bdd = Page.get_bdd(self)
+        hash_admin = bdd.get_admin_hash()
+        hash_actual = str(sha256(actual.encode()).hexdigest())
+        if hash_actual == hash_admin:
+            if new == confirm:
+                hash_new = str(sha256(new.encode()).hexdigest())
+                bdd.change_admin_password(hash_new)
+                ms.showinfo("Mot de passe", "Le mot de passe administrateur a été changé")
+            else:
+                ms.showerror("Error", "Les nouveaux mots de passe ne correspondent pas")
+        else:
+            ms.showerror("Error", "Le mot de passe administrateur ne correspond pas")
+        var_actual.set("")
+        var_new.set("")
+        var_confirm.set("")
