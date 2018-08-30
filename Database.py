@@ -1,6 +1,6 @@
 import sqlite3 as sq
 import tkinter as tk
-import hashlib as hash
+from hashlib import sha256
 
 
 class Database:
@@ -51,13 +51,13 @@ class Database:
 
             def on_ok():
                 passwd = pwd_entry.get()
-                hash_passwd = hash.sha256(passwd.encode())
+                hash_passwd = sha256(passwd.encode()).hexdigest()
                 self.curs.execute("""INSERT INTO users(first_name, last_name, age) VALUES(?, ?, ?)""",
                                   ("admin", str(hash_passwd), 1))
                 self.conn.commit()
                 win_set_pass.destroy()
 
-            tk.Label(win_set_pass, text="Aucun mot de passe administrateur n'est défini, veuillze en entrer un:").pack()
+            tk.Label(win_set_pass, text="Aucun mot de passe administrateur n'est défini, veuillez en entrer un:").pack()
             pwd_entry.pack(side="top")
             pwd_entry.bind('<Return>', lambda self: on_ok())
             tk.Button(win_set_pass, command=lambda self: on_ok(), text="OK").pack(side="top")
@@ -65,6 +65,11 @@ class Database:
             return False
         else:
             return True
+
+    def get_admin_hash(self):
+        self.curs.execute("""SELECT last_name FROM users WHERE first_name=?""", ("admin",))
+        admin_hash = self.curs.fetchone()
+        return admin_hash[0]
 
     def close_db(self):
         self.conn.close()

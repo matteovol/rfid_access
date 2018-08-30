@@ -1,4 +1,6 @@
 from Page import *
+from hashlib import sha256
+import tkinter.messagebox as ms
 
 
 class Admin(Page):
@@ -76,12 +78,17 @@ class Admin(Page):
             def on_ok():
                 global _password
                 _password = pwd_entry.get()
-                self.lift()
+                hash_admin = bdd.get_admin_hash()
+                hash_passwd = sha256(_password.encode()).hexdigest()
+                if str(hash_passwd) == hash_admin:
+                    self.lift()
+                else:
+                    ms.showerror("Error", "Bad password")
                 win_pass.destroy()
 
             tk.Label(win_pass, text="Mot de passe:").pack()
             pwd_entry.pack(side="top")
-            pwd_entry.bind('<Return>', on_ok)
+            pwd_entry.bind("<Return>", lambda self: on_ok())
             tk.Button(win_pass, command=on_ok, text="OK").pack(side="top")
             win_pass.mainloop()
 
