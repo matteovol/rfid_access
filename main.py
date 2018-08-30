@@ -31,7 +31,7 @@ class App(tk.Frame):
 
         # Setup all the 4 buttons to switch between the 4 pages
         reg_b = tk.Button(button_frame, text="Inscription", width=19, height=1, command=reg.lift, font=BIG_FONT)
-        enum_b = tk.Button(button_frame, text="Liste", width=19, height=1, command=enum.lift, font=BIG_FONT)
+        enum_b = tk.Button(button_frame, text="Liste", width=19, height=1, command=enum.lift_list, font=BIG_FONT)
         stat_b = tk.Button(button_frame, text="Statistiques", width=20, height=1, command=stat.lift, font=BIG_FONT)
         admin_b = tk.Button(button_frame, text="Administration", width=20, height=1, command=admin.ask_password,
                             font=BIG_FONT)

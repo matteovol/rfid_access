@@ -1,4 +1,5 @@
 from Page import *
+import tkinter.ttk as ttk
 
 
 class List(Page):
@@ -6,7 +7,7 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
-        global listbox, var_add, var_del
+        global listbox, var_add, var_del, combo
         Page.__init__(self, *args, **kwargs)
 
         # Init invisible frame to place correctly the list
@@ -42,28 +43,40 @@ class List(Page):
         var_del = tk.StringVar()
 
         # Init entry
-        entry_add = tk.Entry(self, textvariable=var_add, font=BIG_FONT)
+        combo = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add)
         entry_del = tk.Entry(self, textvariable=var_del, font=BIG_FONT)
 
         # Init buttons to interact with the list
-        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=self.add_to_list)
+        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list(self))
         button_del = tk.Button(self, text="Retirer", font=BIG_FONT, command=self.del_from_list)
 
         # Setup widgets on the screen
         label_add.grid(row=1, column=4)
-        entry_add.grid(row=2, column=4)
+        combo.grid(row=2, column=4)
         button_add.grid(row=4, column=4)
         label_del.grid(row=6, column=4)
         entry_del.grid(row=7, column=4)
         button_del.grid(row=9, column=4)
 
-        new_order = (entry_add, button_add, entry_del, button_del)
+        new_order = (combo, button_add, entry_del, button_del)
         for w in new_order:
             w.lift()
 
+    def lift_list(self):
+        bdd = Page.get_bdd(self)
+        first, last = bdd.get_names()
+        i = 1
+        values = []
+        while i < len(first):
+            values.append(first[i][0] + " " + last[i][0])
+            i += 1
+        combo.config(values=values)
+        self.lift()
+
     @staticmethod
-    def add_to_list():
-        listbox.insert(tk.END, var_add.get())
+    def add_to_list(self):
+        name = var_add.get()
+        listbox.insert(tk.END, name)
 
     @staticmethod
     def del_from_list():

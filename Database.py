@@ -75,5 +75,12 @@ class Database:
         self.curs.execute("""UPDATE users SET last_name=? WHERE first_name='admin'""", (passwd,))
         self.conn.commit()
 
+    def get_names(self):
+        self.curs.execute("""SELECT first_name FROM users""")
+        tab_first = self.curs.fetchall()
+        self.curs.execute("""SELECT last_name FROM users""")
+        tab_last = self.curs.fetchall()
+        return tab_first, tab_last
+
     def close_db(self):
         self.conn.close()
