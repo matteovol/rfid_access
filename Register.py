@@ -45,7 +45,7 @@ class Register(Page):
 
         # Buttons present in this page
         button_valid = tk.Button(self, text="Valider", command=lambda: self.validate_entry(self), font=BIG_FONT)
-        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can), font=BIG_FONT)
+        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can, self), font=BIG_FONT)
 
         # Print all elements on the Register frame
         label_name.place(in_=self, x=100, y=80)
@@ -80,14 +80,18 @@ class Register(Page):
                 int(var_age.get())
             except ValueError:
                 ms.showerror("Error", "Veuillez entrer un nombre dans la case \'Age\'")
+                return
             name = first + " " + last
             print(name, age, class_, final_dir)
             bdd = Page.get_bdd(self)
+            ret = bdd.check_existing_user(name)
+            if ret != 0:
+                name = name + " ({})".format(ret)
             bdd.register_user(name, age, class_, final_dir)
             ms.showinfo("Info", "L'inscription est validée")
 
     @staticmethod
-    def open_pic(can):
+    def open_pic(can, self):
         """Open an image"""
         global file_name, final_dir
         file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif")])
@@ -113,7 +117,13 @@ class Register(Page):
                 except IOError:
                     pass
                 cur_dir = os.getcwd()
-                final_dir = cur_dir + "\pics\\" + var_name.get() + "_" + var_first.get() + file_name[len(file_name) - 4:]
+                name = var_first.get() + " " + var_name.get()
+                bdd = Page.get_bdd(self)
+                ret = bdd.check_existing_user(name)
+                print(ret)
+                if ret != 0:
+                    name = name + " ({})".format(ret)
+                final_dir = cur_dir + "\pics\\" + name + file_name[len(file_name) - 4:]
                 pics.save(final_dir)
                 pics.close()
             except IOError:

@@ -22,6 +22,11 @@ class Database:
         )""")
         self.conn.commit()
 
+    def check_existing_user(self, name):
+        self.curs.execute("""SELECT name FROM users WHERE name=?""", (name,))
+        ret = self.curs.fetchall()
+        return len(ret)
+
     def register_user(self, name, age, class_, path):
         self.curs.execute("""INSERT INTO users(name, age, class, path) VALUES(?, ?, ?, ?)""",
                           (name, age, class_, path))
