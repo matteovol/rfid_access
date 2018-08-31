@@ -69,20 +69,21 @@ class Register(Page):
     @staticmethod
     def validate_entry(self):
         """Check the entry validity and register the student"""
-        name = var_name.get()
+        last = var_name.get()
         first = var_first.get()
         age = var_age.get()
         class_ = var_class.get()
-        if len(name) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1:
+        if len(last) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1:
             ms.showerror("Error", "Veuillez remplir tout les champs avant de valider l'inscription")
         else:
             try:
                 int(var_age.get())
             except ValueError:
                 ms.showerror("Error", "Veuillez entrer un nombre dans la case \'Age\'")
-            print(name, first, age, class_, final_dir)
+            name = first + " " + last
+            print(name, age, class_, final_dir)
             bdd = Page.get_bdd(self)
-            bdd.register_user(first, name, age, class_, final_dir)
+            bdd.register_user(name, age, class_, final_dir)
             ms.showinfo("Info", "L'inscription est validée")
 
     @staticmethod

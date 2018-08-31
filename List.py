@@ -43,7 +43,7 @@ class List(Page):
         var_del = tk.StringVar()
 
         # Init entry
-        combo = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add)
+        combo = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add, state="readonly")
         entry_del = tk.Entry(self, textvariable=var_del, font=BIG_FONT)
 
         # Init buttons to interact with the list
@@ -64,11 +64,11 @@ class List(Page):
 
     def lift_list(self):
         bdd = Page.get_bdd(self)
-        first, last = bdd.get_names()
+        name = bdd.get_names()
         i = 1
         values = []
-        while i < len(first):
-            values.append(first[i][0] + " " + last[i][0])
+        while i < len(name):
+            values.append(name[i][0])
             i += 1
         combo.config(values=values)
         self.lift()
@@ -89,10 +89,12 @@ class List(Page):
                 listbox.delete(i)
                 break
             i += 1
+        var_del.set("")
 
     @staticmethod
     def selection(self):
         try:
-            print(listbox.get(listbox.curselection()))
+            cur = listbox.get(listbox.curselection())
+            var_del.set(cur)
         except tk.TclError:
             pass

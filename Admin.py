@@ -1,14 +1,17 @@
 from Page import *
 from hashlib import sha256
 import tkinter.messagebox as ms
+from tkinter import ttk
 
 
 class Admin(Page):
     """Administration page, a password is required to enter this page"""
 
     def __init__(self, *args, **kwargs):
-        global var_actual, var_new, var_confirm
+        global var_actual, var_new, var_confirm, bdd
         Page.__init__(self, *args, **kwargs)
+
+        bdd = Page.get_bdd(self)
 
         # Init Label
         label_title = tk.Label(self, text="Changer le mot de passe administrateur", font=BIG_FONT)
@@ -32,7 +35,7 @@ class Admin(Page):
         button_stat_a = tk.Button(self, text="Réinitialiser les statistiques\nannuelles", width=22, font=BIG_FONT,
                                   command=self.delete_annual)
         button_stat_u = tk.Button(self, text="Supprimer un usager", width=22, height=2, font=BIG_FONT,
-                                  command=self.delete_user)
+                                  command=lambda: self.delete_user(self))
         button_stat_ua = tk.Button(self, text="Supprimer tout les usagers", width=22, height=2, font=BIG_FONT,
                                    command=self.delete_all_users)
         button_stat_pass = tk.Button(self, text="Changer le mot de passe", width=22, font=BIG_FONT,
@@ -59,7 +62,6 @@ class Admin(Page):
             w.lift()
 
     def ask_password(self):
-        bdd = Page.get_bdd(self)
         ret = bdd.check_admin_password()
         if ret is True:
             _password = ""
@@ -102,19 +104,53 @@ class Admin(Page):
         pass
 
     @staticmethod
-    def delete_user():
-        pass
+    def get_values():
+        values = []
+        name = bdd.get_names()
+        i = 1
+        while i < len(name):
+            values.append(name[i][0])
+            i += 1
+        return values
+
+    @staticmethod
+    def delete_user(self):
+        win_del = tk.Tk()
+        win_del.title("")
+        width = 200
+        height = 100
+        ws = win_del.winfo_screenwidth()
+        hs = win_del.winfo_screenheight()
+        x = (ws / 2) - (width / 2)
+        y = (hs / 2) - (height / 2)
+        win_del.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
+        win_del.resizable(height=False, width=False)
+        win_del.iconbitmap("ressources/icon.ico")
+
+        def delete(name):
+            bdd.delete_user(name)
+            ms.showinfo("Info", "L'utilisateur {} a été supprimé de la liste".format(name))
+            win_del.destroy()
+
+        values = self.get_values()
+        combo = ttk.Combobox(win_del, values=values, state="readonly")
+        tk.Label(win_del, text="Quel utilisateur faut-il supprimer ?").pack()
+        combo.pack()
+        tk.Button(win_del, text="Valider", command=lambda: delete(combo.get())).pack()
+        win_del.mainloop()
 
     @staticmethod
     def delete_all_users():
-        pass
+        rep = ms.askquestion("Question", "Voulez vous vraiment vider la liste des utilisateurs ?")
+        if rep is not True:
+            bdd.delete_table("users")
+            ms.showinfo("Info", "La liste des utilisateurs a été vidée")
 
     @staticmethod
     def change_password(self):
         actual = var_actual.get()
         new = var_new.get()
         confirm = var_confirm.get()
-        bdd = Page.get_bdd(self)
         hash_admin = bdd.get_admin_hash()
         hash_actual = str(sha256(actual.encode()).hexdigest())
         if hash_actual == hash_admin:
