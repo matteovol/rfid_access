@@ -120,6 +120,19 @@ class Database:
         tab_name = self.curs.fetchall()
         return tab_name
 
+    def create_daily_table(self):
+
+        """Create if not exist the daily stat table"""
+
+        self.curs.execute("""
+        CREATE TABLE IF NOT EXISTS daily(
+            id INTEGER PRIMARY KEY UNIQUE,
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            age INT NOT NULL,
+            class VARCHAR(20)
+        )""")
+        self.conn.commit()
+
     def close_db(self):
 
         """Close the database"""

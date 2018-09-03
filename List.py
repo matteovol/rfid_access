@@ -72,11 +72,14 @@ class List(Page):
         name = bdd.get_names()
         i = 1
         values_add = []
+
+        # Update the addition combo box
         while i < len(name):
             values_add.append(name[i][0])
             i += 1
         combo_add.config(values=values_add)
 
+        # Update the delete combo box
         values_del = listbox.get(0, tk.END)
         combo_del.config(values=values_del)
         self.lift()
@@ -89,12 +92,16 @@ class List(Page):
         val_list = listbox.get(0, tk.END)
         name = var_add.get()
         i = 0
+
+        # Check is there's already the student in the list
         while i < len(val_list):
             if val_list[i] == name:
                 ms.showinfo("Info", "{} est déjà dans la liste des présents".format(name))
                 return
             i += 1
         listbox.insert(tk.END, name)
+
+        # Update the deletion combobox
         val_list = listbox.get(0, tk.END)
         combo_del.config(values=val_list)
 
@@ -117,7 +124,7 @@ class List(Page):
         combo_del.config(values=val_list)
 
     @staticmethod
-    def selection(self):
+    def selection():
 
         """When an element in the list is selected, set the delete variable with this selection"""
 
