@@ -3,7 +3,7 @@ from Page import *
 
 class Stats(Page):
 
-    """Page when all the stats collected are listed"""
+    """Page where all the stats collected are listed"""
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)

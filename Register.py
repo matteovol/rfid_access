@@ -16,6 +16,7 @@ class Register(Page):
         Page.__init__(self, *args, **kwargs)
         image_list = []
         file_name = ""
+
         # Declare all label of the inscription form
         label_name = tk.Label(self, text="Nom:", font=BIG_FONT)
         label_first = tk.Label(self, text="Prénom:", font=BIG_FONT)
@@ -68,7 +69,9 @@ class Register(Page):
 
     @staticmethod
     def validate_entry(self):
+
         """Check the entry validity and register the student"""
+
         last = var_name.get()
         first = var_first.get()
         age = var_age.get()
@@ -92,17 +95,22 @@ class Register(Page):
 
     @staticmethod
     def open_pic(can, self):
-        """Open an image"""
+
+        """Open an image and store a resized version in a folder"""
+
         global file_name, final_dir
         file_name = fd.askopenfilename(title="Ouvrir une image", filetypes=[("images files", ".png .jpg .bmp .gif")])
         if len(var_name.get()) < 1 or len(var_first.get()) < 1:
             ms.showerror("Erreur", "Veuillez d'abord remplir les champs à gauche")
             return
         if len(file_name) > 1:
+            # Delete an existing image in the canvas
             try:
                 can.delete(image_list[0])
             except IndexError:
                 pass
+
+            # Open the image and resize it to 300px width
             try:
                 pics = Image.open(file_name)
                 if pics.width > 300:
@@ -112,20 +120,24 @@ class Register(Page):
                 can.config(width=pics_resize.width(), height=pics_resize.height())
                 image_list.append(can.create_image(0, 0, image=pics_resize, anchor=tk.NW))
                 can.image = pics_resize
+
+                # Create the folder
                 try:
                     os.mkdir("pics")
                 except IOError:
                     pass
+
+                # Save the file
                 cur_dir = os.getcwd()
                 name = var_first.get() + " " + var_name.get()
                 bdd = Page.get_bdd(self)
                 ret = bdd.check_existing_user(name)
-                print(ret)
                 if ret != 0:
                     name = name + " ({})".format(ret)
                 final_dir = cur_dir + "\pics\\" + name + file_name[len(file_name) - 4:]
                 pics.save(final_dir)
                 pics.close()
+
             except IOError:
                 ms.showerror("Error", "Une erreur s'est produite, essayez de recommencer la procédure ou de redémarrer"
                                       + " le logiciel")

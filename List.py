@@ -58,11 +58,15 @@ class List(Page):
         entry_del.grid(row=7, column=4)
         button_del.grid(row=9, column=4)
 
+        # Setup new tab order
         new_order = (combo, button_add, entry_del, button_del)
         for w in new_order:
             w.lift()
 
     def lift_list(self):
+
+        """Lift the list page in the front"""
+
         bdd = Page.get_bdd(self)
         name = bdd.get_names()
         i = 1
@@ -75,11 +79,17 @@ class List(Page):
 
     @staticmethod
     def add_to_list(self):
+
+        """Manually add someone to the list"""
+
         name = var_add.get()
         listbox.insert(tk.END, name)
 
     @staticmethod
     def del_from_list():
+
+        """Manually remove someone from the list"""
+
         to_del = var_del.get()
         size = listbox.size()
         list_values = listbox.get(0, size)
@@ -93,6 +103,9 @@ class List(Page):
 
     @staticmethod
     def selection(self):
+
+        """When an element in the list is selected, set the delete variable with this selection"""
+
         try:
             cur = listbox.get(listbox.curselection())
             var_del.set(cur)

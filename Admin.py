@@ -62,8 +62,13 @@ class Admin(Page):
             w.lift()
 
     def ask_password(self):
+
+        """Create a window to ask password and grant access to admin's page"""
+
+        # Check if an admin password is set
         ret = bdd.check_admin_password()
         if ret is True:
+            # Setup the window
             _password = ""
             win_pass = tk.Tk()
             win_pass.title("")
@@ -79,6 +84,9 @@ class Admin(Page):
             pwd_entry = tk.Entry(win_pass, show='*')
 
             def on_ok():
+
+                """Check the password's validity"""
+
                 global _password
                 _password = pwd_entry.get()
                 hash_admin = bdd.get_admin_hash()
@@ -91,7 +99,7 @@ class Admin(Page):
 
             tk.Label(win_pass, text="Mot de passe:").pack()
             pwd_entry.pack(side="top")
-            pwd_entry.bind("<Return>", lambda self: on_ok())
+            pwd_entry.bind("<Return>", lambda ok: on_ok())
             tk.Button(win_pass, command=on_ok, text="OK").pack(side="top")
             win_pass.mainloop()
 
@@ -105,6 +113,9 @@ class Admin(Page):
 
     @staticmethod
     def get_values():
+
+        """Get all the registered user from the database"""
+
         values = []
         name = bdd.get_names()
         i = 1
@@ -115,6 +126,10 @@ class Admin(Page):
 
     @staticmethod
     def delete_user(self):
+
+        """Open a window to choose an user to delete from the database"""
+
+        # Setup window
         win_del = tk.Tk()
         win_del.title("")
         width = 200
@@ -128,6 +143,9 @@ class Admin(Page):
         win_del.iconbitmap("ressources/icon.ico")
 
         def delete(name):
+
+            """Delete the user from table and show an information message"""
+
             bdd.delete_user(name)
             ms.showinfo("Info", "L'utilisateur {} a été supprimé de la liste".format(name))
             win_del.destroy()
@@ -141,6 +159,9 @@ class Admin(Page):
 
     @staticmethod
     def delete_all_users():
+
+        """Ask the user to delete all the user in the 'users' table"""
+
         rep = ms.askquestion("Question", "Voulez vous vraiment vider la liste des utilisateurs ?")
         if rep is not True:
             bdd.delete_table("users")
@@ -148,6 +169,9 @@ class Admin(Page):
 
     @staticmethod
     def change_password(self):
+
+        """Change the password on the admin page"""
+
         actual = var_actual.get()
         new = var_new.get()
         confirm = var_confirm.get()
