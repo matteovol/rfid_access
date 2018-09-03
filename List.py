@@ -1,5 +1,6 @@
 from Page import *
 import tkinter.ttk as ttk
+import tkinter.messagebox as ms
 
 
 class List(Page):
@@ -7,7 +8,7 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
-        global listbox, var_add, var_del, combo
+        global listbox, var_add, var_del, combo_add, combo_del
         Page.__init__(self, *args, **kwargs)
 
         # Init invisible frame to place correctly the list
@@ -43,8 +44,8 @@ class List(Page):
         var_del = tk.StringVar()
 
         # Init entry
-        combo = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add, state="readonly")
-        entry_del = tk.Entry(self, textvariable=var_del, font=BIG_FONT)
+        combo_add = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add, state="readonly")
+        combo_del = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_del, state="readonly")
 
         # Init buttons to interact with the list
         button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list(self))
@@ -52,14 +53,14 @@ class List(Page):
 
         # Setup widgets on the screen
         label_add.grid(row=1, column=4)
-        combo.grid(row=2, column=4)
+        combo_add.grid(row=2, column=4)
         button_add.grid(row=4, column=4)
         label_del.grid(row=6, column=4)
-        entry_del.grid(row=7, column=4)
+        combo_del.grid(row=7, column=4)
         button_del.grid(row=9, column=4)
 
         # Setup new tab order
-        new_order = (combo, button_add, entry_del, button_del)
+        new_order = (combo_add, button_add, combo_del, button_del)
         for w in new_order:
             w.lift()
 
@@ -70,11 +71,14 @@ class List(Page):
         bdd = Page.get_bdd(self)
         name = bdd.get_names()
         i = 1
-        values = []
+        values_add = []
         while i < len(name):
-            values.append(name[i][0])
+            values_add.append(name[i][0])
             i += 1
-        combo.config(values=values)
+        combo_add.config(values=values_add)
+
+        values_del = listbox.get(0, tk.END)
+        combo_del.config(values=values_del)
         self.lift()
 
     @staticmethod
@@ -82,8 +86,17 @@ class List(Page):
 
         """Manually add someone to the list"""
 
+        val_list = listbox.get(0, tk.END)
         name = var_add.get()
+        i = 0
+        while i < len(val_list):
+            if val_list[i] == name:
+                ms.showinfo("Info", "{} est déjà dans la liste des présents".format(name))
+                return
+            i += 1
         listbox.insert(tk.END, name)
+        val_list = listbox.get(0, tk.END)
+        combo_del.config(values=val_list)
 
     @staticmethod
     def del_from_list():
@@ -100,6 +113,8 @@ class List(Page):
                 break
             i += 1
         var_del.set("")
+        val_list = listbox.get(0, tk.END)
+        combo_del.config(values=val_list)
 
     @staticmethod
     def selection(self):

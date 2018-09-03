@@ -163,7 +163,7 @@ class Admin(Page):
         """Ask the user to delete all the user in the 'users' table"""
 
         rep = ms.askquestion("Question", "Voulez vous vraiment vider la liste des utilisateurs ?")
-        if rep is not True:
+        if rep == "yes":
             bdd.delete_table("users")
             ms.showinfo("Info", "La liste des utilisateurs a été vidée")
 
