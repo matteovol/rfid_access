@@ -22,8 +22,10 @@ class List(Page):
         scroll.grid(row=1, column=2, sticky=tk.NS, rowspan=50)
         listbox = tk.Listbox(self, yscrollcommand=scroll.set, width=50, height=16, font=BIG_FONT)
         listbox.bind('<<ListboxSelect>>', self.selection)
+        listbox.bind('<BackSpace>', lambda x: self.del_from_list())
         listbox.grid(row=1, column=1, rowspan=50)
         scroll.config(command=listbox.yview)
+        self.listbox = listbox
 
         # Init invisible frames to place in the grid
         fr3 = tk.Frame(self, width=20, height=1)
@@ -64,6 +66,9 @@ class List(Page):
         for w in new_order:
             w.lift()
 
+    def get_list(self):
+        return self.listbox
+
     def lift_list(self):
 
         """Lift the list page in the front"""
@@ -91,18 +96,23 @@ class List(Page):
 
         val_list = listbox.get(0, tk.END)
         name = var_add.get()
-        i = 0
+        if len(name) < 1:
+            ms.showerror("Error", "Une ligne vide a été selectionnée")
+            return
 
-        # Check is there's already the student in the list
+        # Check if there's already the student in the list
+        i = 0
         while i < len(val_list):
             if val_list[i] == name:
                 ms.showinfo("Info", "{} est déjà dans la liste des présents".format(name))
+                var_add.set("")
                 return
             i += 1
         listbox.insert(tk.END, name)
 
         # Update the deletion combobox
         val_list = listbox.get(0, tk.END)
+        var_add.set("")
         combo_del.config(values=val_list)
 
     @staticmethod
@@ -124,7 +134,7 @@ class List(Page):
         combo_del.config(values=val_list)
 
     @staticmethod
-    def selection():
+    def selection(x):
 
         """When an element in the list is selected, set the delete variable with this selection"""
 

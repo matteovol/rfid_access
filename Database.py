@@ -133,6 +133,14 @@ class Database:
         )""")
         self.conn.commit()
 
+    def get_name_by_index(self, id):
+
+        """Get user by index"""
+
+        self.curs.execute("""SELECT name FROM users WHERE id=?""", (id,))
+        name = self.curs.fetchone()
+        return name
+
     def close_db(self):
 
         """Close the database"""

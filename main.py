@@ -2,6 +2,8 @@ from Register import *
 from Admin import *
 from Stats import *
 from List import *
+import serial
+import serial.serialutil
 
 
 class App(tk.Frame):
@@ -9,7 +11,7 @@ class App(tk.Frame):
     """Application Class"""
 
     def __init__(self, *args, **kwargs):
-        global reg
+        global reg, enum
         tk.Frame.__init__(self, *args, **kwargs)
 
         # Setup 4 frames for the 4 pages of the application
@@ -48,6 +50,31 @@ def _delete_window(ouais):
     pass
 
 
+def test_for_serial(win, ser):
+    listbox = List.get_list(enum)
+    bdd = Page.get_bdd(enum)
+
+    if ser is None:
+        try:
+            ser = serial.Serial("COM3", baudrate=9600, timeout=0)
+        except serial.serialutil.SerialException:
+            print("La connexion n'as pas pu être effectuée")
+            ser = None
+    if ser is not None:
+        try:
+            id_card = "'{}'".format(ser.readline().decode("utf-8"))
+            try:
+                name = bdd.get_name_by_index(int(id_card))
+                print(name[0])
+                listbox.insert(tk.END, name[0])
+            except ValueError:
+                pass
+        except serial.serialutil.SerialException:
+            print("Data could not be read")
+            return
+    win.after(1000, test_for_serial, win, ser)
+
+
 if __name__ == "__main__":
     # Setup the main window
     root = tk.Tk()
@@ -65,6 +92,7 @@ if __name__ == "__main__":
 
     root.iconbitmap("ressources/icon.ico")
     root.bind("<Destroy>", _delete_window)
+    root.after(1000, test_for_serial, root, None)
 
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
