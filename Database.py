@@ -120,6 +120,14 @@ class Database:
         tab_name = self.curs.fetchall()
         return tab_name
 
+    def get_number_user(self):
+
+        """Get the number of registered users"""
+
+        self.curs.execute("""SELECT COUNT(*) FROM users""")
+        nb_users = self.curs.fetchall()
+        return nb_users[0][0]
+
     def create_daily_table(self):
 
         """Create if not exist the daily stat table"""
@@ -133,11 +141,11 @@ class Database:
         )""")
         self.conn.commit()
 
-    def get_name_by_index(self, id):
+    def get_name_by_index(self, id_card):
 
         """Get user by index"""
 
-        self.curs.execute("""SELECT name FROM users WHERE id=?""", (id,))
+        self.curs.execute("""SELECT name FROM users WHERE id=?""", (id_card,))
         name = self.curs.fetchone()
         return name
 

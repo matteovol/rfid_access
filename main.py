@@ -50,29 +50,50 @@ def _delete_window(ouais):
     pass
 
 
-def test_for_serial(win, ser):
+def is_in_list(listbox, name):
+    i = 0
+    list_val = listbox.get(0, tk.END)
+    while i < len(list_val):
+        if list_val[i] == name:
+            return True, i
+        i += 1
+    return False, -1
+
+
+def test_for_serial(win, ser, prev_id):
     listbox = List.get_list(enum)
     bdd = Page.get_bdd(enum)
 
     if ser is None:
         try:
-            ser = serial.Serial("COM3", baudrate=9600, timeout=0)
+            ser = serial.Serial("COM4", baudrate=9600, timeout=0)
         except serial.serialutil.SerialException:
             print("La connexion n'as pas pu être effectuée")
             ser = None
+
     if ser is not None:
         try:
-            id_card = "'{}'".format(ser.readline().decode("utf-8"))
+            id_card = "{}".format(ser.readline().decode("utf-8"))
+            print('\'' + id_card + '\'')
             try:
-                name = bdd.get_name_by_index(int(id_card))
-                print(name[0])
-                listbox.insert(tk.END, name[0])
+                int(id_card)
+                name = bdd.get_name_by_index(id_card)
+                print(name)
+                if name is not None:
+                    in_list, index = is_in_list(listbox, name[0])
+
+                    if prev_id != id_card and in_list is False:
+                        listbox.insert(tk.END, name[0])
+                    elif prev_id != id_card and in_list is True:
+                        listbox.delete(index)
+                    prev_id = id_card
             except ValueError:
+                prev_id = 0
                 pass
         except serial.serialutil.SerialException:
             print("Data could not be read")
-            return
-    win.after(1000, test_for_serial, win, ser)
+            ser = None
+    win.after(500, test_for_serial, win, ser, prev_id)
 
 
 if __name__ == "__main__":
@@ -92,7 +113,7 @@ if __name__ == "__main__":
 
     root.iconbitmap("ressources/icon.ico")
     root.bind("<Destroy>", _delete_window)
-    root.after(1000, test_for_serial, root, None)
+    root.after(1000, test_for_serial, root, None, 0)
 
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
