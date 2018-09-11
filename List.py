@@ -8,8 +8,10 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
-        global listbox, var_add, var_del, combo_add, combo_del
+        global listbox, var_add, var_del, combo_add, combo_del, bdd
         Page.__init__(self, *args, **kwargs)
+
+        bdd = Page.get_bdd(self)
 
         # Init invisible frame to place correctly the list
         fr1 = tk.Frame(self, width=1, height=50)
@@ -116,6 +118,7 @@ class List(Page):
 
         # Update the deletion combobox
         val_list = listbox.get(0, tk.END)
+        bdd.store_hour_by_name(name)
         var_add.set("")
         combo_del.config(values=val_list)
 
@@ -131,6 +134,7 @@ class List(Page):
         while i < size:
             if list_values[i] == to_del:
                 listbox.delete(i)
+                bdd.store_hour_by_name(list_values[i])
                 break
             i += 1
         var_del.set("")

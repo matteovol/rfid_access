@@ -14,16 +14,14 @@ void setup()
 
 void loop()
 {
-  if () {
-    if (RFID.isCard()) {
-      if (RFID.readCardSerial()) {
-        for (int i = 0; i < 5; i++) {
-          UID[i] = RFID.serNum[i];
-          Serial.print(UID[i], DEC);
-        }
+  if (RFID.isCard()) {
+    if (RFID.readCardSerial()) {
+      for (int i = 0; i < 5; i++) {
+        UID[i] = RFID.serNum[i];
+        Serial.print(UID[i], DEC);
       }
-      RFID.halt();
     }
-    delay(500);
+    RFID.halt();
   }
+  delay(500);
 }

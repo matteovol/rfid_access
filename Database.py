@@ -1,4 +1,5 @@
 import sqlite3 as sq
+import time
 import tkinter as tk
 from hashlib import sha256
 
@@ -128,19 +129,6 @@ class Database:
         nb_users = self.curs.fetchall()
         return nb_users[0][0]
 
-    def create_daily_table(self):
-
-        """Create if not exist the daily stat table"""
-
-        self.curs.execute("""
-        CREATE TABLE IF NOT EXISTS daily(
-            id INTEGER PRIMARY KEY UNIQUE,
-            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            age INT NOT NULL,
-            class VARCHAR(20)
-        )""")
-        self.conn.commit()
-
     def get_name_by_index(self, id_card):
 
         """Get user by index"""
@@ -148,6 +136,61 @@ class Database:
         self.curs.execute("""SELECT name FROM users WHERE id=?""", (id_card,))
         name = self.curs.fetchone()
         return name
+
+    def get_id_by_name(self, name):
+
+        """Get user id by its name"""
+
+        self.curs.execute("""SELECT id FROM users WHERE name=?""", (name,))
+        id_card = self.curs.fetchone()
+        return id_card[0]
+
+    def get_age_by_id(self, id_card):
+
+        """Get the user's age by its id"""
+
+        self.curs.execute("""SELECT age FROM users WHERE id=?""", (id_card,))
+        age = self.curs.fetchone()
+        return age[0]
+
+    def get_class_by_id(self, id_card):
+
+        """Get the usser's class by its id"""
+
+        self.curs.execute("""SELECT class FROM users WHERE id=?""", (id_card,))
+        class_ = self.curs.fetchone()
+        return class_[0]
+
+    def create_daily_table(self):
+
+        """Create if not exist the daily stat table"""
+
+        self.curs.execute("""
+        CREATE TABLE IF NOT EXISTS daily(
+            id INTEGER,
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            age INT NOT NULL,
+            class VARCHAR(20)
+        )""")
+        self.conn.commit()
+
+    def store_hour_by_id(self, id_card):
+
+        """Store in the daily table the time when an user enter or leave using the id"""
+
+        date = time.time()
+        age = self.get_age_by_id(id_card)
+        class_ = self.get_class_by_id(id_card)
+        print(type(age), type(class_), time.ctime(date))
+        self.curs.execute("""INSERT INTO daily(id, date, age, class) VALUES(?, ?, ?, ?)""", (id_card, date, age, class_))
+        self.conn.commit()
+
+    def store_hour_by_name(self, name):
+
+        """Store in the daily table the time where an user enter or leave using the name"""
+
+        id_card = self.get_id_by_name(name)
+        self.store_hour_by_id(id_card)
 
     def close_db(self):
 
