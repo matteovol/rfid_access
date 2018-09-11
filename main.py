@@ -4,6 +4,7 @@ from Stats import *
 from List import *
 import serial
 import serial.serialutil
+import id_call as call
 
 
 class App(tk.Frame):
@@ -19,6 +20,7 @@ class App(tk.Frame):
         enum = List(self)
         stat = Stats(self)
         admin = Admin(self)
+        call.id_call.enum = enum
 
         button_frame = tk.Frame(self)
         container = tk.Frame(self)
@@ -34,7 +36,7 @@ class App(tk.Frame):
         # Setup all the 4 buttons to switch between the 4 pages
         reg_b = tk.Button(button_frame, text="Inscription", width=19, height=1, command=reg.lift, font=BIG_FONT)
         enum_b = tk.Button(button_frame, text="Liste", width=19, height=1, command=enum.lift_list, font=BIG_FONT)
-        stat_b = tk.Button(button_frame, text="Statistiques", width=20, height=1, command=stat.lift, font=BIG_FONT)
+        stat_b = tk.Button(button_frame, text="Statistiques", width=20, height=1, command=stat.lift_stats, font=BIG_FONT)
         admin_b = tk.Button(button_frame, text="Administration", width=20, height=1, command=admin.ask_password,
                             font=BIG_FONT)
 
@@ -61,8 +63,8 @@ def is_in_list(listbox, name):
 
 
 def test_for_serial(win, ser, prev_id):
-    listbox = List.get_list(enum)
-    bdd = Page.get_bdd(enum)
+    listbox = List.get_list(call.id_call.enum)
+    bdd = Page.get_bdd(call.id_call.enum)
 
     if ser is None:
         try:
@@ -72,6 +74,7 @@ def test_for_serial(win, ser, prev_id):
             ser = None
 
     if ser is not None:
+        call.id_call.ser = ser
         try:
             id_card = "{}".format(ser.readline().decode("utf-8"))
             print('\'' + id_card + '\'')
@@ -86,6 +89,9 @@ def test_for_serial(win, ser, prev_id):
                         listbox.insert(tk.END, name[0])
                     elif prev_id != id_card and in_list is True:
                         listbox.delete(index)
+                    val_list = listbox.get(0, tk.END)
+                    combo_del = List.get_combo(call.id_call.enum)
+                    combo_del.config(values=val_list)
                     prev_id = id_card
             except ValueError:
                 prev_id = 0
@@ -93,12 +99,14 @@ def test_for_serial(win, ser, prev_id):
         except serial.serialutil.SerialException:
             print("Data could not be read")
             ser = None
-    win.after(500, test_for_serial, win, ser, prev_id)
+    ret = win.after(500, test_for_serial, win, ser, prev_id)
+    call.id_call.set_id_call(ret)
 
 
 if __name__ == "__main__":
     # Setup the main window
     root = tk.Tk()
+    call.id_call.set_root(root)
 
     # Setup windows size and position
     root.title("Identification RFID")

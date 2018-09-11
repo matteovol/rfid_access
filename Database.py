@@ -33,12 +33,12 @@ class Database:
         ret = self.curs.fetchall()
         return len(ret)
 
-    def register_user(self, name, age, class_, path):
+    def register_user(self, name, age, class_, path, id_card):
 
         """Register a user"""
 
-        self.curs.execute("""INSERT INTO users(name, age, class, path) VALUES(?, ?, ?, ?)""",
-                          (name, age, class_, path))
+        self.curs.execute("""INSERT INTO users(id, name, age, class, path) VALUES(?, ?, ?, ?, ?)""",
+                          (id_card, name, age, class_, path))
         self.conn.commit()
 
     def delete_user(self, name):

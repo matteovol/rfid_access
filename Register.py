@@ -5,6 +5,9 @@ from PIL import ImageTk
 from PIL import Image
 from Page import *
 import os
+import id_call as call
+import serial
+from main import test_for_serial
 
 
 class Register(Page):
@@ -45,7 +48,7 @@ class Register(Page):
         frame.grid_propagate(0)
 
         # Buttons present in this page
-        button_valid = tk.Button(self, text="Valider", command=lambda: self.validate_entry(self), font=BIG_FONT)
+        button_valid = tk.Button(self, text="Valider", command=lambda: self.validate_entry(can, self), font=BIG_FONT)
         button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can, self), font=BIG_FONT)
 
         # Print all elements on the Register frame
@@ -68,7 +71,22 @@ class Register(Page):
             w.lift()
 
     @staticmethod
-    def validate_entry(self):
+    def get_id_card():
+        while True:
+            if call.id_call.ser is not None:
+                try:
+                    id_card = "{}".format(call.id_call.ser.readline().decode("utf-8"))
+                    print('\'' + id_card + '\'')
+                    try:
+                        int(id_card)
+                        return id_card
+                    except ValueError:
+                        pass
+                except serial.serialutil.SerialException:
+                    print("Data could not be read")
+
+    @staticmethod
+    def validate_entry(can, self):
 
         """Check the entry validity and register the student"""
 
@@ -76,6 +94,8 @@ class Register(Page):
         first = var_first.get()
         age = var_age.get()
         class_ = var_class.get()
+        root = call.id_call.get_root()
+        root.after_cancel(call.id_call.get_id_call())
         if len(last) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1:
             ms.showerror("Error", "Veuillez remplir tout les champs avant de valider l'inscription")
         else:
@@ -85,13 +105,20 @@ class Register(Page):
                 ms.showerror("Error", "Veuillez entrer un nombre dans la case \'Age\'")
                 return
             name = first + " " + last
-            print(name, age, class_, final_dir)
+            card_id = self.get_id_card()
+            print(name, age, class_, final_dir, card_id)
             bdd = Page.get_bdd(self)
             ret = bdd.check_existing_user(name)
             if ret != 0:
                 name = name + " ({})".format(ret)
-            bdd.register_user(name, age, class_, final_dir)
+            bdd.register_user(name, age, class_, final_dir, card_id)
             ms.showinfo("Info", "L'inscription est validée")
+            var_name.set("")
+            var_first.set("")
+            var_age.set("")
+            var_class.set("")
+            can.delete(image_list[0])
+            call.id_call.root.after(1000, test_for_serial, root, call.id_call.ser, 0)
 
     @staticmethod
     def open_pic(can, self):

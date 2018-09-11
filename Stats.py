@@ -6,6 +6,7 @@ class Stats(Page):
     """Page where all the stats collected are listed"""
 
     def __init__(self, *args, **kwargs):
+        global var_nb_user, bdd
         Page.__init__(self, *args, **kwargs)
 
         bdd = Page.get_bdd(self)
@@ -23,4 +24,5 @@ class Stats(Page):
         label_user_var.place(in_=self, x=300, y=50)
 
     def lift_stats(self):
+        var_nb_user.set(str(bdd.get_number_user() - 1))
         self.lift()

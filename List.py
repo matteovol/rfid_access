@@ -48,6 +48,7 @@ class List(Page):
         # Init entry
         combo_add = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_add, state="readonly")
         combo_del = ttk.Combobox(self, width=19, font=BIG_FONT, textvariable=var_del, state="readonly")
+        self.combo_del = combo_del
 
         # Init buttons to interact with the list
         button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list(self))
@@ -68,6 +69,9 @@ class List(Page):
 
     def get_list(self):
         return self.listbox
+
+    def get_combo(self):
+        return self.combo_del
 
     def lift_list(self):
 
