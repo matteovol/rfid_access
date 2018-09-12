@@ -129,13 +129,13 @@ class Database:
         nb_users = self.curs.fetchall()
         return nb_users[0][0]
 
-    def get_name_by_index(self, id_card):
+    def get_name_by_id(self, id_card):
 
         """Get user by index"""
 
         self.curs.execute("""SELECT name FROM users WHERE id=?""", (id_card,))
         name = self.curs.fetchone()
-        return name
+        return name[0]
 
     def get_id_by_name(self, name):
 
@@ -168,29 +168,60 @@ class Database:
         self.curs.execute("""
         CREATE TABLE IF NOT EXISTS daily(
             id INTEGER,
-            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            name VARCHAR(100),
+            date_enter TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            date_leave TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             age INT NOT NULL,
             class VARCHAR(20)
         )""")
         self.conn.commit()
 
-    def store_hour_by_id(self, id_card):
+    def get_daily_stats(self):
+
+        """Get all the data in the daily table"""
+
+        self.curs.execute("""SELECT * FROM daily""")
+        table = self.curs.fetchall()
+        return table
+
+    def store_hour_enter_by_id(self, id_card):
 
         """Store in the daily table the time when an user enter or leave using the id"""
 
         date = time.time()
         age = self.get_age_by_id(id_card)
         class_ = self.get_class_by_id(id_card)
-        print(type(age), type(class_), time.ctime(date))
-        self.curs.execute("""INSERT INTO daily(id, date, age, class) VALUES(?, ?, ?, ?)""", (id_card, date, age, class_))
+        name = self.get_name_by_id(id_card)
+        self.curs.execute("""INSERT INTO daily(id, name, date_enter, age, class) VALUES(?, ?, ?, ?, ?)""", (id_card, name, date, age, class_))
         self.conn.commit()
 
-    def store_hour_by_name(self, name):
+    def store_hour_leave_by_id(self, id_card):
 
-        """Store in the daily table the time where an user enter or leave using the name"""
+        """Store the leaving value in the table"""
+
+        date = time.time()
+        self.curs.execute("""SELECT * FROM daily WHERE id=?""", (id_card,))
+        tab = self.curs.fetchall()
+        tab_time = []
+        for t in tab:
+            tab_time.append(t[2])
+        max_time = max(tab_time)
+        self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time), (date,))
+        self.conn.commit()
+
+    def store_hour_enter_by_name(self, name):
+
+        """Store the enter timestamp in the daily table using the name"""
 
         id_card = self.get_id_by_name(name)
-        self.store_hour_by_id(id_card)
+        self.store_hour_enter_by_id(id_card)
+
+    def store_hour_leave_by_name(self, name):
+
+        """Store the leave timestamp in the daily table using the name"""
+
+        id_card = self.get_id_by_name(name)
+        self.store_hour_leave_by_id(id_card)
 
     def close_db(self):
 

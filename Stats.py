@@ -23,6 +23,15 @@ class Stats(Page):
         label_nb_user.place(in_=self, x=50, y=50)
         label_user_var.place(in_=self, x=300, y=50)
 
+    @staticmethod
+    def compute_daily_stat():
+        stats = bdd.get_daily_stats()
+        tab = []
+        for s in stats:
+            tab.append(s[2] - s[1])
+        print(tab)
+
     def lift_stats(self):
         var_nb_user.set(str(bdd.get_number_user() - 1))
+        self.compute_daily_stat()
         self.lift()

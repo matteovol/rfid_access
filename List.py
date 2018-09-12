@@ -118,7 +118,7 @@ class List(Page):
 
         # Update the deletion combobox
         val_list = listbox.get(0, tk.END)
-        bdd.store_hour_by_name(name)
+        bdd.store_hour_enter_by_name(name)
         var_add.set("")
         combo_del.config(values=val_list)
 
@@ -134,7 +134,7 @@ class List(Page):
         while i < size:
             if list_values[i] == to_del:
                 listbox.delete(i)
-                bdd.store_hour_by_name(list_values[i])
+                bdd.store_hour_leave_by_name(list_values[i])
                 break
             i += 1
         var_del.set("")
