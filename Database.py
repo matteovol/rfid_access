@@ -22,9 +22,18 @@ class Database:
             name VARCHAR(100),
             age INT NOT NULL,
             class VARCHAR(20),
+            town VARCHAR(30),
             path VARCHAR(256)
         )""")
         self.conn.commit()
+
+    def get_user_table(self):
+
+        """Get all the 'user' database"""
+
+        self.curs.execute("""SELECT * FROM users WHERE id is not 1""")
+        users = self.curs.fetchall()
+        return users
 
     def check_existing_user(self, name):
 
@@ -34,12 +43,12 @@ class Database:
         ret = self.curs.fetchall()
         return len(ret)
 
-    def register_user(self, name, age, class_, path, id_card):
+    def register_user(self, name, age, class_, path, id_card, town):
 
         """Register a user"""
 
-        self.curs.execute("""INSERT INTO users(id, name, age, class, path) VALUES(?, ?, ?, ?, ?)""",
-                          (id_card, name, age, class_, path))
+        self.curs.execute("""INSERT INTO users(id, name, age, class, town, path) VALUES(?, ?, ?, ?, ?, ?)""",
+                          (id_card, name, age, class_, town, path))
         self.conn.commit()
 
     def delete_user(self, name):
@@ -170,7 +179,7 @@ class Database:
             id INTEGER,
             name VARCHAR(100),
             date_enter TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            date_leave TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            date_leave TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             age INT NOT NULL,
             class VARCHAR(20)
         )""")
@@ -192,7 +201,7 @@ class Database:
         age = self.get_age_by_id(id_card)
         class_ = self.get_class_by_id(id_card)
         name = self.get_name_by_id(id_card)
-        self.curs.execute("""INSERT INTO daily(id, name, date_enter, age, class) VALUES(?, ?, ?, ?, ?)""", (id_card, name, date, age, class_))
+        self.curs.execute("""INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""", (id_card, name, date, None, age, class_))
         self.conn.commit()
 
     def store_hour_leave_by_id(self, id_card):

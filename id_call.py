@@ -5,6 +5,7 @@ class IdCall:
         self.root = None
         self.ser = None
         self.enum = None
+        self.bdd = None
 
     def set_id_call(self, call):
         self.id_call = call

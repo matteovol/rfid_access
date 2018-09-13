@@ -2,6 +2,7 @@ from Page import *
 from hashlib import sha256
 import tkinter.messagebox as ms
 from tkinter import ttk
+import tkinter.filedialog as fd
 
 
 class Admin(Page):
@@ -30,8 +31,8 @@ class Admin(Page):
         entry_confirm = tk.Entry(self, font=BIG_FONT, textvariable=var_confirm, show='*', width=40)
 
         # Init buttons
-        button_stat_h = tk.Button(self, text="Réinitialiser les statistiques\nhebdomadaires", width=22, font=BIG_FONT,
-                                  command=self.delete_hebdo)
+        button_stat_h = tk.Button(self, text="Exporter les données pour\nExcel", width=22, font=BIG_FONT,
+                                  command=self.export_data)
         button_stat_a = tk.Button(self, text="Réinitialiser les statistiques\nannuelles", width=22, font=BIG_FONT,
                                   command=self.delete_annual)
         button_stat_u = tk.Button(self, text="Supprimer un usager", width=22, height=2, font=BIG_FONT,
@@ -108,8 +109,19 @@ class Admin(Page):
         pass
 
     @staticmethod
-    def delete_hebdo():
-        pass
+    def export_data():
+        file_name = fd.asksaveasfilename(title="Enregistrer les données", filetypes=[("csv files", ".csv "), ("text file", ".txt"), ("all files", "*.*")])
+        file = open(file_name, "w")
+        users = bdd.get_user_table()
+        file.write("id,name,age,classe,commune\n")
+        for u in users:
+            i = 0
+            while i < len(u) - 1:
+                file.write(str(u[i]))
+                file.write(",")
+                i += 1
+            file.write("\n")
+        file.close()
 
     @staticmethod
     def get_values():

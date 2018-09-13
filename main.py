@@ -24,6 +24,7 @@ class App(tk.Frame):
         call.id_call.enum = enum
 
         bdd = Page.get_bdd(enum)
+        call.id_call.bdd = bdd
 
         button_frame = tk.Frame(self)
         container = tk.Frame(self)
@@ -68,6 +69,7 @@ def is_in_list(listbox, name):
 
 def test_for_serial(win, ser, prev_id):
     listbox = List.get_list(call.id_call.enum)
+    b = call.id_call.bdd
 
     if ser is None:
         try:
@@ -83,17 +85,17 @@ def test_for_serial(win, ser, prev_id):
             print('\'' + id_card + '\'')
             try:
                 int(id_card)
-                name = bdd.get_name_by_id(id_card)
+                name = b.get_name_by_id(id_card)
                 print(name)
                 if name is not None:
                     in_list, index = is_in_list(listbox, name)
 
                     if prev_id != id_card and in_list is False:
                         listbox.insert(tk.END, name)
-                        bdd.store_hour_enter_by_id(id_card)
+                        b.store_hour_enter_by_id(id_card)
                     elif prev_id != id_card and in_list is True:
                         listbox.delete(index)
-                        bdd.store_hour_leave_by_id(id_card)
+                        b.store_hour_leave_by_id(id_card)
                     val_list = listbox.get(0, tk.END)
                     combo_del = List.get_combo(call.id_call.enum)
                     combo_del.config(values=val_list)

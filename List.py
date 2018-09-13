@@ -27,6 +27,7 @@ class List(Page):
         listbox.bind('<BackSpace>', lambda x: self.del_from_list())
         listbox.grid(row=1, column=1, rowspan=50)
         scroll.config(command=listbox.yview)
+        self.fill_list()
         self.listbox = listbox
 
         # Init invisible frames to place in the grid
@@ -79,7 +80,6 @@ class List(Page):
 
         """Lift the list page in the front"""
 
-        bdd = Page.get_bdd(self)
         name = bdd.get_names()
         i = 1
         values_add = []
@@ -94,6 +94,13 @@ class List(Page):
         values_del = listbox.get(0, tk.END)
         combo_del.config(values=values_del)
         self.lift()
+
+    @staticmethod
+    def fill_list():
+        stats = bdd.get_daily_stats()
+        for s in stats:
+            if s[3] is None:
+                listbox.insert(tk.END, s[1])
 
     @staticmethod
     def add_to_list(self):

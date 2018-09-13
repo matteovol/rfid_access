@@ -15,7 +15,7 @@ class Register(Page):
     """Register page. The inscription form must be fully completed to register someone"""
 
     def __init__(self, *args, **kwargs):
-        global var_age, var_class, var_first, var_name, image_list, file_name
+        global var_age, var_class, var_first, var_name, image_list, file_name, var_town
         Page.__init__(self, *args, **kwargs)
         image_list = []
         file_name = ""
@@ -25,6 +25,7 @@ class Register(Page):
         label_first = tk.Label(self, text="Prénom:", font=BIG_FONT)
         label_age = tk.Label(self, text="Age:", font=BIG_FONT)
         label_class = tk.Label(self, text="Classe:", font=BIG_FONT)
+        label_town = tk.Label(self, text="Commune:", font=BIG_FONT)
         label_name.focus_set()
 
         # StringVar to get the values set in the inscription form
@@ -32,11 +33,13 @@ class Register(Page):
         var_first = tk.StringVar()
         var_age = tk.StringVar()
         var_class = tk.StringVar()
+        var_town = tk.StringVar()
 
         # Entry text to fill form
         entry_name = tk.Entry(self, textvariable=var_name, font=BIG_FONT)
         entry_first = tk.Entry(self, textvariable=var_first, font=BIG_FONT)
         entry_age = tk.Entry(self, textvariable=var_age, font=BIG_FONT)
+        entry_town = tk.Entry(self, textvariable=var_town, font=BIG_FONT)
 
         # Dropdown list to chose the student's
         values = ["6ème", "5ème", "4ème", "3ème", "Seconde", "Première", "Terminale", "Autre"]
@@ -52,21 +55,23 @@ class Register(Page):
         button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can, self), font=BIG_FONT)
 
         # Print all elements on the Register frame
-        label_name.place(in_=self, x=100, y=80)
-        entry_name.place(in_=self, x=100, y=120)
-        label_first.place(in_=self, x=100, y=170)
-        entry_first.place(in_=self, x=100, y=210)
-        label_age.place(in_=self, x=100, y=260)
-        entry_age.place(in_=self, x=100, y=300)
-        label_class.place(in_=self, x=100, y=350)
-        combo.place(in_=self, x=100, y=390)
+        label_name.place(in_=self, x=100, y=60)
+        entry_name.place(in_=self, x=100, y=100)
+        label_first.place(in_=self, x=100, y=150)
+        entry_first.place(in_=self, x=100, y=190)
+        label_age.place(in_=self, x=100, y=240)
+        entry_age.place(in_=self, x=100, y=280)
+        label_class.place(in_=self, x=100, y=330)
+        combo.place(in_=self, x=100, y=370)
+        label_town.place(in_=self, x=100, y=420)
+        entry_town.place(in_=self, x=100, y=460)
         frame.place(in_=self, x=600, y=50)
         button_open.place(in_=self, x=623, y=470)
         button_valid.place(in_=self, x=150, y=540)
         can.pack()
 
         # Set a new widget order
-        new_order = (entry_name, entry_first, entry_age, combo, button_open, button_valid)
+        new_order = (entry_name, entry_first, entry_age, combo, entry_town, button_open, button_valid)
         for w in new_order:
             w.lift()
 
@@ -94,9 +99,10 @@ class Register(Page):
         first = var_first.get()
         age = var_age.get()
         class_ = var_class.get()
+        town = var_town.get()
         root = call.id_call.get_root()
         root.after_cancel(call.id_call.get_id_call())
-        if len(last) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1:
+        if len(last) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1 or len(town) < 1:
             ms.showerror("Error", "Veuillez remplir tout les champs avant de valider l'inscription")
         else:
             try:
@@ -106,17 +112,18 @@ class Register(Page):
                 return
             name = first + " " + last
             card_id = self.get_id_card()
-            print(name, age, class_, final_dir, card_id)
+            print(name, age, class_, final_dir, card_id, town)
             bdd = Page.get_bdd(self)
             ret = bdd.check_existing_user(name)
             if ret != 0:
                 name = name + " ({})".format(ret)
-            bdd.register_user(name, age, class_, final_dir, card_id)
+            bdd.register_user(name, age, class_, final_dir, card_id, town)
             ms.showinfo("Info", "L'inscription est validée")
             var_name.set("")
             var_first.set("")
             var_age.set("")
             var_class.set("")
+            var_town.set("")
             can.delete(image_list[0])
             call.id_call.root.after(1000, test_for_serial, root, call.id_call.ser, 0)
 
