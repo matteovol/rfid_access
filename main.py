@@ -5,6 +5,7 @@ from List import *
 import serial
 import serial.serialutil
 import id_call as call
+import datetime
 
 
 class App(tk.Frame):
@@ -12,7 +13,7 @@ class App(tk.Frame):
     """Application Class"""
 
     def __init__(self, *args, **kwargs):
-        global reg, enum
+        global reg, enum, bdd
         tk.Frame.__init__(self, *args, **kwargs)
 
         # Setup 4 frames for the 4 pages of the application
@@ -21,6 +22,8 @@ class App(tk.Frame):
         stat = Stats(self)
         admin = Admin(self)
         call.id_call.enum = enum
+
+        bdd = Page.get_bdd(enum)
 
         button_frame = tk.Frame(self)
         container = tk.Frame(self)
@@ -48,8 +51,9 @@ class App(tk.Frame):
         reg.show()
 
 
-def _delete_window(ouais):
-    pass
+def _delete_window():
+    bdd.close_db()
+    root.destroy()
 
 
 def is_in_list(listbox, name):
@@ -64,7 +68,6 @@ def is_in_list(listbox, name):
 
 def test_for_serial(win, ser, prev_id):
     listbox = List.get_list(call.id_call.enum)
-    bdd = Page.get_bdd(call.id_call.enum)
 
     if ser is None:
         try:
@@ -105,6 +108,22 @@ def test_for_serial(win, ser, prev_id):
     call.id_call.set_id_call(ret)
 
 
+def update_database():
+    stats = bdd.get_daily_stats()
+    date = datetime.datetime.now().strftime("%Y-%m-%d")
+    try:
+        base_stamp = stats[0][2]
+    except IndexError:
+        return
+    base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%Y-%m-%d")
+    print(date, base_stamp)
+    if base_stamp != date:
+        tab = []
+        for s in stats:
+            tab.append(round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2))
+        print(tab)
+
+
 if __name__ == "__main__":
     # Setup the main window
     root = tk.Tk()
@@ -122,10 +141,11 @@ if __name__ == "__main__":
     root.resizable(width=False, height=False)
 
     root.iconbitmap("ressources/icon.ico")
-    root.bind("<Destroy>", _delete_window)
+    root.protocol("WM_DELETE_WINDOW", _delete_window)
     root.after(1000, test_for_serial, root, None, 0)
 
     main = App(root)
     main.pack(side="top", fill="both", expand=True)
+    update_database()
 
     root.mainloop()
