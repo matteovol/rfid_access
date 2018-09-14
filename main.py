@@ -6,6 +6,7 @@ import serial
 import serial.serialutil
 import id_call as call
 import datetime
+from collections import Counter
 
 
 class App(tk.Frame):
@@ -110,6 +111,15 @@ def test_for_serial(win, ser, prev_id):
     call.id_call.set_id_call(ret)
 
 
+def get_unique_user(stats):
+    li = [stats[0][1]]
+    for s in stats:
+        for i in li:
+            if i != s[1]:
+                li.append(s[1])
+    return li
+
+
 def update_database():
     stats = bdd.get_daily_stats()
     date = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -118,12 +128,29 @@ def update_database():
     except IndexError:
         return
     base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%Y-%m-%d")
-    print(date, base_stamp)
+    # print(date, base_stamp)
     if base_stamp != date:
-        tab = []
+        bdd.create_annual_table()
+        moy = 0
         for s in stats:
-            tab.append(round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2))
-        print(tab)
+            moy += round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2)
+        moy /= len(stats)
+        uuser_list = get_unique_user(stats)
+        nb_user = len(uuser_list)
+        user_table = bdd.get_user_table()
+        age = 0
+        town_list = []
+        for u in user_table:
+            for i in uuser_list:
+                if u[1] == i:
+                    town_list.append(u[4])
+                    age += u[2]
+        age /= len(uuser_list)
+        most_town = Counter(town_list)
+        town = list(most_town.keys())[0]
+        bdd.set_daily_stats(base_stamp, nb_user, age, moy, town)
+        bdd.clear_daily_table()
+        # print(base_stamp, nb_user, age, moy, town)
 
 
 if __name__ == "__main__":

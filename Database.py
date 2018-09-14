@@ -144,7 +144,10 @@ class Database:
 
         self.curs.execute("""SELECT name FROM users WHERE id=?""", (id_card,))
         name = self.curs.fetchone()
-        return name[0]
+        try:
+            return name[0]
+        except TypeError:
+            return None
 
     def get_id_by_name(self, name):
 
@@ -231,6 +234,25 @@ class Database:
 
         id_card = self.get_id_by_name(name)
         self.store_hour_leave_by_id(id_card)
+
+    def clear_daily_table(self):
+        self.curs.execute("""DELETE FROM daily""")
+        self.conn.commit()
+
+    def create_annual_table(self):
+        self.curs.execute("""
+        CREATE TABLE IF NOT EXISTS annual (
+            date VARCHAR(20),
+            nb_user INT NOT NULL,
+            average_age INT NOT NULL,
+            average_time REAL,
+            town VARCHAR(30)
+        )""")
+        self.conn.commit()
+
+    def set_daily_stats(self, date, nb_user, average_age, average_time, town):
+        self.curs.execute("""INSERT INTO annual(date, nb_user, average_age, average_time, town) VALUES(?, ?, ?, ?, ?)""", (date, nb_user, average_age, average_time, town))
+        self.conn.commit()
 
     def close_db(self):
 
