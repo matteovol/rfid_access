@@ -150,12 +150,12 @@ def update_database():
 
     bdd.create_annual_table()
     # Get timestamp from first line and compare the date
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
+    date = datetime.datetime.now().strftime("%d-%m-%Y")
     try:
         base_stamp = stats[0][2]
     except IndexError:
         return
-    base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%Y-%m-%d")
+    base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%d-%m-%Y")
     # print(date, base_stamp)
 
     # If date is yesterday, compute stats and store it
