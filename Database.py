@@ -187,6 +187,7 @@ class Database:
             class VARCHAR(20)
         )""")
         self.conn.commit()
+        self.create_log_table()
 
     def get_daily_stats(self):
 
@@ -206,6 +207,7 @@ class Database:
         name = self.get_name_by_id(id_card)
         self.curs.execute("""INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""", (id_card, name, date, None, age, class_))
         self.conn.commit()
+        self.store_enter_log(id_card, name, date, age, class_)
 
     def store_hour_leave_by_id(self, id_card):
 
@@ -220,6 +222,7 @@ class Database:
         max_time = max(tab_time)
         self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time), (date,))
         self.conn.commit()
+        self.store_leave_log(id_card, max_time, date)
 
     def store_hour_enter_by_name(self, name):
 
@@ -268,6 +271,29 @@ class Database:
         """Clear the annual table"""
 
         self.curs.execute("""DELETE FROM annual""")
+        self.conn.commit()
+
+    def create_log_table(self):
+
+        """Create if not exist the log table"""
+
+        self.curs.execute("""
+        CREATE TABLE IF NOT EXISTS log(
+            id INTEGER,
+            name VARCHAR(100),
+            date_enter TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            date_leave TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            age INT NOT NULL,
+            class VARCHAR(20)
+        )""")
+        self.conn.commit()
+
+    def store_enter_log(self, id_card, name, date, age, class_):
+        self.curs.execute("""INSERT INTO log(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""", (id_card, name, date, None, age, class_))
+        self.conn.commit()
+
+    def store_leave_log(self, id_card, max_time, date):
+        self.curs.execute("UPDATE log SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time), (date,))
         self.conn.commit()
 
     def close_db(self):

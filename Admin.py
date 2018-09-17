@@ -31,8 +31,10 @@ class Admin(Page):
         entry_confirm = tk.Entry(self, font=BIG_FONT, textvariable=var_confirm, show='*', width=40)
 
         # Init buttons
-        button_stat_h = tk.Button(self, text="Exporter les données pour\nExcel", width=22, font=BIG_FONT,
-                                  command=self.export_data)
+        button_export_users = tk.Button(self, text="Exporter la table utilisateur\nen CSV", width=22, font=BIG_FONT,
+                                  command=self.export_user)
+        button_export_an = tk.Button(self, text="Exporter la table des statistiques\nen CSV", width=22, font=BIG_FONT,
+                                     command=self.export_annual)
         button_stat_a = tk.Button(self, text="Réinitialiser les statistiques\nannuelles", width=22, font=BIG_FONT,
                                   command=self.delete_annual)
         button_stat_u = tk.Button(self, text="Supprimer un usager", width=22, height=2, font=BIG_FONT,
@@ -43,10 +45,11 @@ class Admin(Page):
                                      command=lambda: self.change_password(self))
 
         # Place elements on screen
-        button_stat_h.place(in_=self, x=100, y=100)
-        button_stat_a.place(in_=self, x=100, y=210)
-        button_stat_u.place(in_=self, x=100, y=320)
-        button_stat_ua.place(in_=self, x=100, y=430)
+        button_export_users.place(in_=self, x=100, y=80)
+        button_export_an.place(in_=self, x=100, y=190)
+        button_stat_a.place(in_=self, x=100, y=300)
+        button_stat_u.place(in_=self, x=100, y=410)
+        button_stat_ua.place(in_=self, x=100, y=520)
         label_title.place(in_=self, x=650, y=60)
         label_actual.place(in_=self, x=600, y=120)
         entry_actual.place(in_=self, x=600, y=170)
@@ -57,8 +60,8 @@ class Admin(Page):
         button_stat_pass.place(in_=self, x=700, y=400)
 
         # Setup the tab order (navigation in widget using the tab button)
-        new_order = (button_stat_h, button_stat_a, button_stat_u, button_stat_ua, entry_actual, entry_new,
-                     entry_confirm, button_stat_pass)
+        new_order = (button_export_users, button_export_an, button_stat_a, button_stat_u, button_stat_ua, entry_actual,
+                     entry_new, entry_confirm, button_stat_pass)
         for w in new_order:
             w.lift()
 
@@ -115,19 +118,35 @@ class Admin(Page):
             ms.showinfo("Info", "Les statistiques annuelles ont été supprimées")
 
     @staticmethod
-    def export_data():
+    def export_user():
 
-        """Export data to csv file, can be improted to excel"""
+        """Export user table to csv file, can be imported to excel"""
 
-        file_name = fd.asksaveasfilename(title="Enregistrer les données", filetypes=[("csv files", ".csv "), ("text file", ".txt"), ("all files", "*.*")])
+        file_name = fd.asksaveasfilename(title="Enregistrer les utilisateurs", filetypes=[("csv files", ".csv "), ("text files", ".txt"), ("all files", "*.*")])
         file = open(file_name, "w")
         users = bdd.get_user_table()
         file.write("id,name,age,classe,commune\n")
         for u in users:
             i = 0
             while i < len(u) - 1:
-                file.write(str(u[i]))
-                file.write(",")
+                file.write(str(u[i]) + ",")
+                i += 1
+            file.write("\n")
+        file.close()
+
+    @staticmethod
+    def export_annual():
+
+        """Export annual stat table to CSV file, can be imported in Excel"""
+
+        file_name = fd.asksaveasfilename(title="Enregistrer les statistiques", filetypes=[("csv files", "*.csv"), ("text files", "*.txt"), ("all files", "*.*")])
+        file = open(file_name, "w")
+        stats = bdd.get_stat_table()
+        file.write("id,name,date_enter,date_leave,age,class,\n")
+        for s in stats:
+            i = 0
+            while i < len(s):
+                file.write(str(s[i]) + ",")
                 i += 1
             file.write("\n")
         file.close()
