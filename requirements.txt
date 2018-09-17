@@ -1,0 +1,13 @@
+sqlite3
+time
+tkinter
+tkinter.messagebox
+tkinter.filedialog
+tkinter.ttk
+PIL
+os
+serial
+serial.serialutil
+datetime
+collections.Counter
+hashlib
