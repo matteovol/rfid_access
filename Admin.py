@@ -106,10 +106,19 @@ class Admin(Page):
 
     @staticmethod
     def delete_annual():
-        pass
+
+        """Delete values from the annual table"""
+
+        rep = ms.askquestion("Question", "Voulez vous supprimer les statistiques anuelles")
+        if rep == "yes":
+            bdd.clear_annual_table()
+            ms.showinfo("Info", "Les statistiques annuelles ont été supprimées")
 
     @staticmethod
     def export_data():
+
+        """Export data to csv file, can be improted to excel"""
+
         file_name = fd.asksaveasfilename(title="Enregistrer les données", filetypes=[("csv files", ".csv "), ("text file", ".txt"), ("all files", "*.*")])
         file = open(file_name, "w")
         users = bdd.get_user_table()

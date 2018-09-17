@@ -54,11 +54,17 @@ class App(tk.Frame):
 
 
 def _delete_window():
+
+    """Function handle the close events"""
+
     bdd.close_db()
     root.destroy()
 
 
 def is_in_list(listbox, name):
+
+    """Check if a user is already in listbox"""
+
     i = 0
     list_val = listbox.get(0, tk.END)
     while i < len(list_val):
@@ -69,9 +75,13 @@ def is_in_list(listbox, name):
 
 
 def test_for_serial(win, ser, prev_id):
+
+    """Listener for serial port"""
+
     listbox = List.get_list(call.id_call.enum)
     b = call.id_call.bdd
 
+    # Try connection to serial port and handle fail
     if ser is None:
         try:
             ser = serial.Serial("COM4", baudrate=9600, timeout=0)
@@ -79,24 +89,30 @@ def test_for_serial(win, ser, prev_id):
             print("La connexion n'as pas pu être effectuée")
             ser = None
 
+    # Read serial port
     if ser is not None:
         call.id_call.ser = ser
         try:
             id_card = "{}".format(ser.readline().decode("utf-8"))
             print('\'' + id_card + '\'')
             try:
+
+                # Get name by id_card
                 int(id_card)
                 name = b.get_name_by_id(id_card)
                 print(name)
                 if name is not None:
                     in_list, index = is_in_list(listbox, name)
 
+                    # Store hour enter or leave
                     if prev_id != id_card and in_list is False:
                         listbox.insert(tk.END, name)
                         b.store_hour_enter_by_id(id_card)
                     elif prev_id != id_card and in_list is True:
                         listbox.delete(index)
                         b.store_hour_leave_by_id(id_card)
+
+                    # Update other widgets
                     val_list = listbox.get(0, tk.END)
                     combo_del = List.get_combo(call.id_call.enum)
                     combo_del.config(values=val_list)
@@ -107,11 +123,16 @@ def test_for_serial(win, ser, prev_id):
         except serial.serialutil.SerialException:
             print("Data could not be read")
             ser = None
+
+    # Recall the listener
     ret = win.after(500, test_for_serial, win, ser, prev_id)
     call.id_call.set_id_call(ret)
 
 
 def get_unique_user(stats):
+
+    """Return a list of unique user present in the previous day"""
+
     li = [stats[0][1]]
     for s in stats:
         for i in li:
@@ -121,7 +142,12 @@ def get_unique_user(stats):
 
 
 def update_database():
+
+    """Compute stats from daily table and store it in annual table"""
+
     stats = bdd.get_daily_stats()
+
+    # Get timestamp from first line and compare the date
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     try:
         base_stamp = stats[0][2]
@@ -129,14 +155,22 @@ def update_database():
         return
     base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%Y-%m-%d")
     # print(date, base_stamp)
+
+    # If date is yesterday, compute stats and store it
     if base_stamp != date:
         bdd.create_annual_table()
+
+        # Compute hour average
         moy = 0
         for s in stats:
             moy += round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2)
         moy /= len(stats)
+
+        # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
         nb_user = len(uuser_list)
+
+        # Compute average age and most common town represented
         user_table = bdd.get_user_table()
         age = 0
         town_list = []
@@ -148,6 +182,8 @@ def update_database():
         age /= len(uuser_list)
         most_town = Counter(town_list)
         town = list(most_town.keys())[0]
+
+        # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, age, moy, town)
         bdd.clear_daily_table()
         # print(base_stamp, nb_user, age, moy, town)
@@ -168,9 +204,12 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-
     root.iconbitmap("ressources/icon.ico")
+
+    # Handle windows close events
     root.protocol("WM_DELETE_WINDOW", _delete_window)
+
+    # Call listener to serial port
     root.after(1000, test_for_serial, root, None, 0)
 
     main = App(root)

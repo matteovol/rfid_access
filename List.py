@@ -71,9 +71,15 @@ class List(Page):
             w.lift()
 
     def get_list(self):
+
+        """Return the present user list"""
+
         return self.listbox
 
     def get_combo(self):
+
+        """Return the"""
+
         return self.combo_del
 
     def lift_list(self):
@@ -97,6 +103,9 @@ class List(Page):
 
     @staticmethod
     def fill_list():
+
+        """Add present user to the list after a restart"""
+
         stats = bdd.get_daily_stats()
         for s in stats:
             if s[3] is None:
@@ -134,16 +143,21 @@ class List(Page):
 
         """Manually remove someone from the list"""
 
+        # Get the current list
         to_del = var_del.get()
         size = listbox.size()
         list_values = listbox.get(0, size)
         i = 0
+
+        # Insert the value in the list if not exist
         while i < size:
             if list_values[i] == to_del:
                 listbox.delete(i)
                 bdd.store_hour_leave_by_name(list_values[i])
                 break
             i += 1
+
+        # Set widgets with the added value
         var_del.set("")
         val_list = listbox.get(0, tk.END)
         combo_del.config(values=val_list)

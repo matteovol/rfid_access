@@ -236,10 +236,16 @@ class Database:
         self.store_hour_leave_by_id(id_card)
 
     def clear_daily_table(self):
+
+        """Clear the daily table"""
+
         self.curs.execute("""DELETE FROM daily""")
         self.conn.commit()
 
     def create_annual_table(self):
+
+        """Create the annual table"""
+
         self.curs.execute("""
         CREATE TABLE IF NOT EXISTS annual (
             date VARCHAR(20),
@@ -251,7 +257,17 @@ class Database:
         self.conn.commit()
 
     def set_daily_stats(self, date, nb_user, average_age, average_time, town):
+
+        """Insert daily stats into the annual table"""
+
         self.curs.execute("""INSERT INTO annual(date, nb_user, average_age, average_time, town) VALUES(?, ?, ?, ?, ?)""", (date, nb_user, average_age, average_time, town))
+        self.conn.commit()
+
+    def clear_annual_table(self):
+
+        """Clear the annual table"""
+
+        self.curs.execute("""DELETE FROM annual""")
         self.conn.commit()
 
     def close_db(self):

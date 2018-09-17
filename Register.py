@@ -77,9 +77,13 @@ class Register(Page):
 
     @staticmethod
     def get_id_card():
+
+        """Get the id from card"""
+
         while True:
             if call.id_call.ser is not None:
                 try:
+                    # Read data from serial port
                     id_card = "{}".format(call.id_call.ser.readline().decode("utf-8"))
                     print('\'' + id_card + '\'')
                     try:
@@ -95,6 +99,7 @@ class Register(Page):
 
         """Check the entry validity and register the student"""
 
+        # Get the values from the register form
         last = var_name.get()
         first = var_first.get()
         age = var_age.get()
@@ -102,6 +107,8 @@ class Register(Page):
         town = var_town.get()
         root = call.id_call.get_root()
         root.after_cancel(call.id_call.get_id_call())
+
+        # Do some error management
         if len(last) < 1 or len(first) < 1 or len(age) < 1 or len(class_) < 1 or len(file_name) < 1 or len(town) < 1:
             ms.showerror("Error", "Veuillez remplir tout les champs avant de valider l'inscription")
         else:
@@ -112,19 +119,23 @@ class Register(Page):
                 return
             name = first + " " + last
             card_id = self.get_id_card()
-            print(name, age, class_, final_dir, card_id, town)
             bdd = Page.get_bdd(self)
             ret = bdd.check_existing_user(name)
             if ret != 0:
                 name = name + " ({})".format(ret)
             bdd.register_user(name, age, class_, final_dir, card_id, town)
             ms.showinfo("Info", "L'inscription est validée")
+            print(name, age, class_, final_dir, card_id, town)
+
+            # Reset the values blank
             var_name.set("")
             var_first.set("")
             var_age.set("")
             var_class.set("")
             var_town.set("")
             can.delete(image_list[0])
+
+            # Call function to check serial connection with arduino
             call.id_call.root.after(1000, test_for_serial, root, call.id_call.ser, 0)
 
     @staticmethod
