@@ -1,13 +1,2 @@
-sqlite3
-time
-tkinter
-tkinter.messagebox
-tkinter.filedialog
-tkinter.ttk
-PIL
-os
-serial
-serial.serialutil
-datetime
-collections.Counter
-hashlib
+Pillow==5.2.0
+pyserial==3.4
