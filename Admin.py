@@ -32,8 +32,8 @@ class Admin(Page):
 
         # Init buttons
         button_export_users = tk.Button(self, text="Exporter la table utilisateur\nen CSV", width=22, font=BIG_FONT,
-                                  command=self.export_user)
-        button_export_an = tk.Button(self, text="Exporter la table des statistiques\nen CSV", width=22, font=BIG_FONT,
+                                        command=self.export_user)
+        button_export_an = tk.Button(self, text="Exporter la table des\nstatistiques en CSV", width=22, font=BIG_FONT,
                                      command=self.export_annual)
         button_stat_a = tk.Button(self, text="Réinitialiser les statistiques\nannuelles", width=22, font=BIG_FONT,
                                   command=self.delete_annual)
@@ -45,11 +45,11 @@ class Admin(Page):
                                      command=lambda: self.change_password(self))
 
         # Place elements on screen
-        button_export_users.place(in_=self, x=100, y=80)
-        button_export_an.place(in_=self, x=100, y=190)
-        button_stat_a.place(in_=self, x=100, y=300)
-        button_stat_u.place(in_=self, x=100, y=410)
-        button_stat_ua.place(in_=self, x=100, y=520)
+        button_export_users.place(in_=self, x=100, y=70)
+        button_export_an.place(in_=self, x=100, y=180)
+        button_stat_a.place(in_=self, x=100, y=290)
+        button_stat_u.place(in_=self, x=100, y=400)
+        button_stat_ua.place(in_=self, x=100, y=510)
         label_title.place(in_=self, x=650, y=60)
         label_actual.place(in_=self, x=600, y=120)
         entry_actual.place(in_=self, x=600, y=170)
@@ -122,7 +122,9 @@ class Admin(Page):
 
         """Export user table to csv file, can be imported to excel"""
 
-        file_name = fd.asksaveasfilename(title="Enregistrer les utilisateurs", filetypes=[("csv files", ".csv "), ("text files", ".txt"), ("all files", "*.*")])
+        file_name = fd.asksaveasfilename(title="Enregistrer les utilisateurs",
+                                         filetypes=[("csv files", ".csv "), ("text files", ".txt"),
+                                                    ("all files", "*.*")])
         file = open(file_name, "w")
         users = bdd.get_user_table()
         file.write("id,name,age,classe,commune\n")
@@ -139,9 +141,11 @@ class Admin(Page):
 
         """Export annual stat table to CSV file, can be imported in Excel"""
 
-        file_name = fd.asksaveasfilename(title="Enregistrer les statistiques", filetypes=[("csv files", "*.csv"), ("text files", "*.txt"), ("all files", "*.*")])
+        file_name = fd.asksaveasfilename(title="Enregistrer les statistiques",
+                                         filetypes=[("csv files", "*.csv"), ("text files", "*.txt"),
+                                                    ("all files", "*.*")])
         file = open(file_name, "w")
-        stats = bdd.get_stat_table()
+        stats = bdd.get_annual_table()
         file.write("id,name,date_enter,date_leave,age,class,\n")
         for s in stats:
             i = 0
@@ -183,7 +187,6 @@ class Admin(Page):
         win_del.iconbitmap("ressources/icon.ico")
 
         def delete(name):
-
             """Delete the user from table and show an information message"""
 
             bdd.delete_user(name)

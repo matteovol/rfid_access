@@ -266,6 +266,14 @@ class Database:
         self.curs.execute("""INSERT INTO annual(date, nb_user, average_age, average_time, town) VALUES(?, ?, ?, ?, ?)""", (date, nb_user, average_age, average_time, town))
         self.conn.commit()
 
+    def get_annual_table(self):
+
+        """Get all the annual table"""
+
+        self.curs.execute("""SELECT * FROM annual""")
+        stats = self.curs.fetchall()
+        return stats
+
     def clear_annual_table(self):
 
         """Clear the annual table"""

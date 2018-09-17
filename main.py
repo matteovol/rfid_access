@@ -147,6 +147,7 @@ def update_database():
 
     stats = bdd.get_daily_stats()
 
+    bdd.create_annual_table()
     # Get timestamp from first line and compare the date
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     try:
@@ -158,7 +159,6 @@ def update_database():
 
     # If date is yesterday, compute stats and store it
     if base_stamp != date:
-        bdd.create_annual_table()
 
         # Compute hour average
         moy = 0
