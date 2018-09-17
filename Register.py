@@ -52,7 +52,8 @@ class Register(Page):
 
         # Buttons present in this page
         button_valid = tk.Button(self, text="Valider", command=lambda: self.validate_entry(can, self), font=BIG_FONT)
-        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can, self), font=BIG_FONT)
+        button_open = tk.Button(self, text="Importer une photo", command=lambda: self.open_pic(can, self),
+                                font=BIG_FONT)
 
         # Print all elements on the Register frame
         label_name.place(in_=self, x=100, y=60)

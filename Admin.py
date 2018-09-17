@@ -42,7 +42,7 @@ class Admin(Page):
         button_stat_ua = tk.Button(self, text="Supprimer tout les usagers", width=22, height=2, font=BIG_FONT,
                                    command=self.delete_all_users)
         button_stat_pass = tk.Button(self, text="Changer le mot de passe", width=22, font=BIG_FONT,
-                                     command=lambda: self.change_password(self))
+                                     command=lambda: self.change_password())
 
         # Place elements on screen
         button_export_users.place(in_=self, x=100, y=70)
@@ -211,7 +211,7 @@ class Admin(Page):
             ms.showinfo("Info", "La liste des utilisateurs a été vidée")
 
     @staticmethod
-    def change_password(self):
+    def change_password():
 
         """Change the password on the admin page"""
 

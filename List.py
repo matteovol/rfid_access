@@ -54,7 +54,7 @@ class List(Page):
         self.combo_del = combo_del
 
         # Init buttons to interact with the list
-        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list(self))
+        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list())
         button_del = tk.Button(self, text="Retirer", font=BIG_FONT, command=self.del_from_list)
 
         # Setup widgets on the screen
@@ -112,7 +112,7 @@ class List(Page):
                 listbox.insert(tk.END, s[1])
 
     @staticmethod
-    def add_to_list(self):
+    def add_to_list():
 
         """Manually add someone to the list"""
 
@@ -163,7 +163,7 @@ class List(Page):
         combo_del.config(values=val_list)
 
     @staticmethod
-    def selection(x):
+    def selection(evt):
 
         """When an element in the list is selected, set the delete variable with this selection"""
 

@@ -205,7 +205,8 @@ class Database:
         age = self.get_age_by_id(id_card)
         class_ = self.get_class_by_id(id_card)
         name = self.get_name_by_id(id_card)
-        self.curs.execute("""INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""", (id_card, name, date, None, age, class_))
+        self.curs.execute("INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)",
+                          (id_card, name, date, None, age, class_))
         self.conn.commit()
         self.store_enter_log(id_card, name, date, age, class_)
 
@@ -220,7 +221,8 @@ class Database:
         for t in tab:
             tab_time.append(t[2])
         max_time = max(tab_time)
-        self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time), (date,))
+        self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
+                          (date,))
         self.conn.commit()
         self.store_leave_log(id_card, max_time, date)
 
@@ -263,7 +265,8 @@ class Database:
 
         """Insert daily stats into the annual table"""
 
-        self.curs.execute("""INSERT INTO annual(date, nb_user, average_age, average_time, town) VALUES(?, ?, ?, ?, ?)""", (date, nb_user, average_age, average_time, town))
+        self.curs.execute("INSERT INTO annual(date, nb_user, average_age, average_time, town) VALUES(?, ?, ?, ?, ?)",
+                          (date, nb_user, average_age, average_time, town))
         self.conn.commit()
 
     def get_annual_table(self):
@@ -297,11 +300,13 @@ class Database:
         self.conn.commit()
 
     def store_enter_log(self, id_card, name, date, age, class_):
-        self.curs.execute("""INSERT INTO log(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""", (id_card, name, date, None, age, class_))
+        self.curs.execute("""INSERT INTO log(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""",
+                          (id_card, name, date, None, age, class_))
         self.conn.commit()
 
     def store_leave_log(self, id_card, max_time, date):
-        self.curs.execute("UPDATE log SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time), (date,))
+        self.curs.execute("UPDATE log SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
+                          (date,))
         self.conn.commit()
 
     def close_db(self):
