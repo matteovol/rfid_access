@@ -181,8 +181,8 @@ class Database:
         CREATE TABLE IF NOT EXISTS daily(
             id INTEGER,
             name VARCHAR(100),
-            date_enter TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            date_leave TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            date_enter TIMESTAMP CURRENT_TIMESTAMP,
+            date_leave TIMESTAMP CURRENT_TIMESTAMP,
             age INT NOT NULL,
             class VARCHAR(20)
         )""")
@@ -253,6 +253,7 @@ class Database:
 
         self.curs.execute("""
         CREATE TABLE IF NOT EXISTS annual (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             date VARCHAR(20),
             nb_user INT NOT NULL,
             average_age INT NOT NULL,
@@ -283,6 +284,14 @@ class Database:
 
         self.curs.execute("""DELETE FROM annual""")
         self.conn.commit()
+
+    def sort_annual_table(self):
+
+        """Get the 10 last enter in the annual table"""
+
+        self.curs.execute("""SELECT * FROM annual ORDER BY id DESC""")
+        table = self.curs.fetchmany(10)
+        return table
 
     def create_log_table(self):
 

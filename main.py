@@ -181,6 +181,7 @@ def update_database():
                     town_list.append(u[4])
                     age += u[2]
         age /= len(uuser_list)
+        round(age, 1)
         most_town = Counter(town_list)
         town = list(most_town.keys())[0]
 
