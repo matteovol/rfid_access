@@ -108,10 +108,10 @@ def test_for_serial(win, ser, prev_id):
                     # Store hour enter or leave
                     if prev_id != id_card and in_list is False:
                         listbox.insert(tk.END, name)
-                        b.store_hour_enter_by_id(id_card)
+                        b.store_enter_by_id(id_card)
                     elif prev_id != id_card and in_list is True:
                         listbox.delete(index)
-                        b.store_hour_leave_by_id(id_card)
+                        b.store_leave_by_id(id_card)
 
                     # Update other widgets
                     val_list = listbox.get(0, tk.END)
@@ -134,11 +134,10 @@ def get_unique_user(stats):
 
     """Return a list of unique user present in the previous day"""
 
-    li = [stats[0][1]]
+    li = []
     for s in stats:
-        for i in li:
-            if i != s[1]:
-                li.append(s[1])
+        li.append(s[1])
+    li = list(set(li))
     return li
 
 
@@ -186,7 +185,7 @@ def update_database():
         town = list(most_town.keys())[0]
 
         # Clear daily table and store data in annual
-        bdd.set_daily_stats(base_stamp, nb_user, age, moy, town)
+        bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
         bdd.clear_daily_table()
         # print(base_stamp, nb_user, age, moy, town)
 

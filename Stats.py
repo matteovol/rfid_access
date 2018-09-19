@@ -41,7 +41,7 @@ class Stats(Page):
         label_val_fri = tk.Label(self, textvariable=var_fri, font=BIG_FONT)
 
         # Init combobox
-        values = ("Classe", "Commune", "Nombre d'utilisateur", "Temps")
+        values = ("Age moyen", "Commune", "Nombre d'utilisateur", "Temps moyen")
         combo_stat = ttk.Combobox(self, font=BIG_FONT, textvariable=var_combo, state="readonly", values=values)
 
         # Init buttons
@@ -81,6 +81,7 @@ class Stats(Page):
         while i < len(day):
             if day[i] == 4:
                 first = i
+                break
             i += 1
         week_tab = []
         if first is not None:
@@ -93,13 +94,13 @@ class Stats(Page):
                 first += 1
         tab_day = [var_mon, var_tue, var_wen, var_thi, var_fri]
         j = 0
-        if to_see == "Classe":
+        if to_see == "Age moyen":
             j = 3
         elif to_see == "Commune":
             j = 5
         elif to_see == "Nombre d'utilisateur":
             j = 2
-        elif to_see == "Temps":
+        elif to_see == "Temps moyen":
             j = 4
         i = 4
         for d in tab_day:

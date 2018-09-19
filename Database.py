@@ -197,7 +197,7 @@ class Database:
         table = self.curs.fetchall()
         return table
 
-    def store_hour_enter_by_id(self, id_card):
+    def store_enter_by_id(self, id_card):
 
         """Store in the daily table the time when an user enter or leave using the id"""
 
@@ -206,39 +206,41 @@ class Database:
         class_ = self.get_class_by_id(id_card)
         name = self.get_name_by_id(id_card)
         self.curs.execute("INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)",
-                          (id_card, name, date, None, age, class_))
+                          (id_card, name, round(date, 3), None, age, class_))
         self.conn.commit()
         self.store_enter_log(id_card, name, date, age, class_)
 
-    def store_hour_leave_by_id(self, id_card):
+    def store_leave_by_id(self, id_card):
 
         """Store the leaving value in the table"""
 
         date = time.time()
         self.curs.execute("""SELECT * FROM daily WHERE id=?""", (id_card,))
         tab = self.curs.fetchall()
+        print(tab)
         tab_time = []
         for t in tab:
             tab_time.append(t[2])
-        max_time = max(tab_time)
+        max_time = round(max(tab_time), 3)
+        print(max_time)
         self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
-                          (date,))
+                          (round(date, 3),))
         self.conn.commit()
         self.store_leave_log(id_card, max_time, date)
 
-    def store_hour_enter_by_name(self, name):
+    def store_enter_by_name(self, name):
 
         """Store the enter timestamp in the daily table using the name"""
 
         id_card = self.get_id_by_name(name)
-        self.store_hour_enter_by_id(id_card)
+        self.store_enter_by_id(id_card)
 
-    def store_hour_leave_by_name(self, name):
+    def store_leave_by_name(self, name):
 
         """Store the leave timestamp in the daily table using the name"""
 
         id_card = self.get_id_by_name(name)
-        self.store_hour_leave_by_id(id_card)
+        self.store_leave_by_id(id_card)
 
     def clear_daily_table(self):
 
@@ -310,12 +312,12 @@ class Database:
 
     def store_enter_log(self, id_card, name, date, age, class_):
         self.curs.execute("""INSERT INTO log(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""",
-                          (id_card, name, date, None, age, class_))
+                          (id_card, name, round(date, 3), None, age, class_))
         self.conn.commit()
 
     def store_leave_log(self, id_card, max_time, date):
         self.curs.execute("UPDATE log SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
-                          (date,))
+                          (round(date, 3),))
         self.conn.commit()
 
     def close_db(self):
