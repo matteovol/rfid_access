@@ -146,7 +146,7 @@ class Admin(Page):
                                                     ("all files", "*.*")])
         file = open(file_name, "w")
         stats = bdd.get_annual_table()
-        file.write("id,name,date_enter,date_leave,age,\n")
+        file.write("id,date,nomdre utilisateur,age moyen,temps moyen,commune\n")
         for s in stats:
             i = 0
             while i < len(s):
