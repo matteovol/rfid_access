@@ -328,6 +328,14 @@ class Database:
                           (round(date, 3),))
         self.conn.commit()
 
+    def get_log_by_date(self, stamp):
+        self.curs.execute("SELECT * FROM log WHERE date_enter>=? AND date_enter<=?", (stamp, stamp + 86400))
+        table = self.curs.fetchall()
+        return table
+
+    def get_log_by_name(self, name):
+        pass
+
     def close_db(self):
 
         """Close the database"""
