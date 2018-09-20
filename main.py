@@ -54,7 +54,7 @@ class App(tk.Frame):
         reg.show()
 
 
-def _delete_window():
+def delete_window():
 
     """Function handle the close events"""
 
@@ -97,7 +97,6 @@ def test_for_serial(win, ser, prev_id):
             id_card = "{}".format(ser.readline().decode("utf-8"))
             print('\'' + id_card + '\'')
             try:
-
                 # Get name by id_card
                 int(id_card)
                 name = b.get_name_by_id(id_card)
@@ -146,6 +145,7 @@ def update_database():
     """Compute stats from daily table and store it in annual table"""
 
     stats = bdd.get_daily_stats()
+    del stats[0]
 
     bdd.create_annual_table()
     # Get timestamp from first line and compare the date
@@ -187,6 +187,7 @@ def update_database():
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
         bdd.clear_daily_table()
+        bdd.add_empty_line()
         # print(base_stamp, nb_user, age, moy, town)
 
 
@@ -208,7 +209,7 @@ if __name__ == "__main__":
     root.iconbitmap("ressources/icon.ico")
 
     # Handle windows close events
-    root.protocol("WM_DELETE_WINDOW", _delete_window)
+    root.protocol("WM_DELETE_WINDOW", delete_window)
 
     # Call listener to serial port
     root.after(1000, test_for_serial, root, None, 0)

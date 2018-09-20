@@ -242,6 +242,14 @@ class Database:
         id_card = self.get_id_by_name(name)
         self.store_leave_by_id(id_card)
 
+    def add_empty_line(self):
+
+        """Add an empty line in daily table to prevent empty stats"""
+
+        self.curs.execute("INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)",
+                          (None, None, None, None, 0, None))
+        self.conn.commit()
+
     def clear_daily_table(self):
 
         """Clear the daily table"""

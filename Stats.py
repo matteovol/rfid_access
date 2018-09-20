@@ -17,7 +17,7 @@ class Stats(Page):
         var_nb_user = tk.StringVar()
         var_nb_user.set(str(bdd.get_number_user() - 1))
         var_title = tk.StringVar()
-        var_title.set("Titre")
+        var_title.set("Statistique sur la semaine passée")
         var_mon = tk.StringVar()
         var_tue = tk.StringVar()
         var_wen = tk.StringVar()

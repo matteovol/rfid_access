@@ -163,7 +163,7 @@ class List(Page):
         combo_del.config(values=val_list)
 
     @staticmethod
-    def selection(evt):
+    def selection(_evt):
 
         """When an element in the list is selected, set the delete variable with this selection"""
 
