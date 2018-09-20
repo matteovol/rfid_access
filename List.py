@@ -54,7 +54,7 @@ class List(Page):
         self.combo_del = combo_del
 
         # Init buttons to interact with the list
-        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda: self.add_to_list())
+        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=self.add_to_list)
         button_del = tk.Button(self, text="Retirer", font=BIG_FONT, command=self.del_from_list)
 
         # Setup widgets on the screen

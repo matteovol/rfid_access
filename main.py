@@ -181,8 +181,12 @@ def update_database():
                     age += u[2]
         age /= len(uuser_list)
         round(age, 1)
-        most_town = Counter(town_list)
-        town = list(most_town.keys())[0]
+        town_dict = Counter(town_list)
+        town_list = list(town_dict.keys())
+        i = 0
+        town = ""
+        while i < 2 or i < len(town_list):
+            town += town_list[i] + ' '
 
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
