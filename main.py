@@ -185,8 +185,9 @@ def update_database():
         town_list = list(town_dict.keys())
         i = 0
         town = ""
-        while i < 2 or i < len(town_list):
+        while i < 2 and i < len(town_list):
             town += town_list[i] + ' '
+            i += 1
 
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)

@@ -3,7 +3,9 @@ import tkinter.messagebox as ms
 import Database as db
 import time
 import datetime
+import tkinter.filedialog as fd
 from tkinter import ttk
+from dateutil import tz
 
 FONT = "arial 15"
 
@@ -44,7 +46,17 @@ class App(tk.Frame):
                 stamp = time.mktime(datetime.datetime.strptime('-'.join(search), "%d-%m-%Y").timetuple())
                 print(stamp)
                 table = bdd.get_log_by_date(stamp)
-                print(table)
+                file_name = fd.asksaveasfilename(title="Enregistrer les données",
+                                                 filetypes=[("csv files", "*.csv"), ("text files", "*.txt"),
+                                                            ("all files", "*.*")])
+                file = open(file_name, "w")
+                file.write("nom,dayte_enter,date_leave\n")
+                from_zone = tz.tzutc()
+                to_zone = tz.tzlocal()
+                fmt = "%H:%M:%S"
+                for t in table:
+                    file.write(t[1] + ',' + datetime.datetime.utcfromtimestamp(t[2]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt) + ',' +
+                               datetime.datetime.utcfromtimestamp(t[3]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt) + '\n')
             else:
                 ms.showerror("Error", "La date est erronée")
         elif mode == "Nom":
