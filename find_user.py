@@ -40,31 +40,49 @@ class App(tk.Frame):
         mode = var_combo.get()
         search = var_entry.get()
         print(mode, search)
+        from_zone = tz.tzutc()
+        to_zone = tz.tzlocal()
+        fmt_time = "%H:%M:%S"
+        fmt_date = "%d-%m-%Y"
         if mode == "Date":
             search = search.split('-')
             if len(search) == 3 and search[0].isdigit() and int(search[0]) <= 31 and search[1].isdigit() and int(search[1]) <= 12 and search[2].isdigit():
                 stamp = time.mktime(datetime.datetime.strptime('-'.join(search), "%d-%m-%Y").timetuple())
                 print(stamp)
                 table = bdd.get_log_by_date(stamp)
+                if len(table) < 1:
+                    ms.showerror("Erreur", "La date saisie ne possède pas d'occurence")
+                    return
                 file_name = fd.asksaveasfilename(title="Enregistrer les données",
                                                  filetypes=[("csv files", "*.csv"), ("text files", "*.txt"),
                                                             ("all files", "*.*")])
                 file = open(file_name, "w")
-                file.write("nom,dayte_enter,date_leave\n")
-                from_zone = tz.tzutc()
-                to_zone = tz.tzlocal()
-                fmt = "%H:%M:%S"
+                file.write("nom,date_enter,date_leave\n")
                 for t in table:
-                    file.write(t[1] + ',' + datetime.datetime.utcfromtimestamp(t[2]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt) + ',' +
-                               datetime.datetime.utcfromtimestamp(t[3]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt) + '\n')
+                    file.write(t[1] + ',' + datetime.datetime.utcfromtimestamp(t[2]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt_time) + ',' +
+                               datetime.datetime.utcfromtimestamp(t[3]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt_time) + '\n')
             else:
                 ms.showerror("Error", "La date est erronée")
+                return
         elif mode == "Nom":
             search = search.split(' ')
-            if len(search) == 2 and search[0].isalpha() and search[1].isalpha():
-                bdd.get_log_by_name(' '.join(search))
+            if len(search) >= 2 and search[0].isalpha() and search[1].isalpha():
+                tab = bdd.get_log_by_name(' '.join(search))
+                if len(tab) < 1:
+                    ms.showerror("Erreur", "Le nom saisi n'est pas présent")
+                    return
+                file_name = fd.asksaveasfilename(title="Enregistrer les données",
+                                                 filetypes=[("csv files", "*.csv"), ("text files", "*.txt"),
+                                                            ("all files", "*.*")])
+                file = open(file_name, "w")
+                file.write("date,time_enter,time_leave\n")
+                for t in tab:
+                    file.write(datetime.datetime.utcfromtimestamp(t[2]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt_date) + ',' +
+                               datetime.datetime.utcfromtimestamp(t[2]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt_time) + ',' +
+                               datetime.datetime.utcfromtimestamp(t[3]).replace(tzinfo=from_zone).astimezone(to_zone).strftime(fmt_time) + '\n')
             else:
                 ms.showerror("Erreur", "Le nom saisi est erroné")
+                return
 
 
 def delete_window():

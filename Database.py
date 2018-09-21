@@ -334,7 +334,9 @@ class Database:
         return table
 
     def get_log_by_name(self, name):
-        pass
+        self.curs.execute("SELECT * FROM log WHERE name=?", (name,))
+        table = self.curs.fetchall()
+        return table
 
     def close_db(self):
 
