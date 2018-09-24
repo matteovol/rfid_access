@@ -180,7 +180,7 @@ class Register(Page):
                 ret = bdd.check_existing_user(name)
                 if ret != 0:
                     name = name + " ({})".format(ret)
-                final_dir = cur_dir + "\pics\\" + name + file_name[len(file_name) - 4:]
+                final_dir = cur_dir + "/pics/" + name + file_name[len(file_name) - 4:]
                 pics.save(final_dir)
                 pics.close()
 
