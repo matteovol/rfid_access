@@ -1,5 +1,6 @@
 venv/
 pics/
+__pycache__/
 *.db
 
 # User-specific stuff
