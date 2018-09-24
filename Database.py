@@ -84,7 +84,8 @@ class Database:
             y = (hs / 2) - (height / 2)
             win_set_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
             win_set_pass.resizable(height=False, width=False)
-            win_set_pass.iconbitmap("ressources/icon.ico")
+#            img = tk.Image("photo", file="ressources/icon.gif")
+#            win_set_pass.tk.call("wm", "iconphoto", win_set_pass._w, img)
             pwd_entry = tk.Entry(win_set_pass, show='*')
 
             def on_ok():
@@ -98,7 +99,7 @@ class Database:
                 self.conn.commit()
                 win_set_pass.destroy()
 
-            tk.Label(win_set_pass, text="Aucun mot de passe administrateur n'est défini, veuillez en entrer un:").pack()
+            tk.Label(win_set_pass, text="Aucun mot de passe administrateur n'est défini,\nveuillez en entrer un:").pack()
             pwd_entry.pack(side="top")
             pwd_entry.bind('<Return>', lambda ok: on_ok())
             tk.Button(win_set_pass, command=lambda ok: on_ok(), text="OK").pack(side="top")

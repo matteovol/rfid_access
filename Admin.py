@@ -84,7 +84,8 @@ class Admin(Page):
             y = (hs / 2) - (height / 2)
             win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
             win_pass.resizable(height=False, width=False)
-            win_pass.iconbitmap("ressources/icon.ico")
+#            img = tk.Image("photo", file="ressources/icon.gif")
+#            win_pass.tk.call("wm", "iconphoto", win_pass._w, img)
             pwd_entry = tk.Entry(win_pass, show='*')
 
             def on_ok():
@@ -184,7 +185,8 @@ class Admin(Page):
         y = (hs / 2) - (height / 2)
         win_del.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
         win_del.resizable(height=False, width=False)
-        win_del.iconbitmap("ressources/icon.ico")
+#        img = tk.Image("photo", file="ressources/icon.gif")
+#        win_del.tk.call("wm", "iconphoto", win_del._w, img)
 
         def delete(name):
             """Delete the user from table and show an information message"""

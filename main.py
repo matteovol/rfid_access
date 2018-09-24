@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from Register import *
 from Admin import *
 from Stats import *
@@ -85,7 +86,7 @@ def test_for_serial(win, ser, prev_id):
     # Try connection to serial port and handle fail
     if ser is None:
         try:
-            ser = serial.Serial("COM4", baudrate=9600, timeout=0)
+            ser = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=0)
         except serial.serialutil.SerialException:
             print("La connexion n'as pas pu être effectuée")
             ser = None
@@ -145,7 +146,10 @@ def update_database():
     """Compute stats from daily table and store it in annual table"""
 
     stats = bdd.get_daily_stats()
-    del stats[0]
+    try:
+        del stats[0]
+    except IndexError:
+        return
 
     bdd.create_annual_table()
     # Get timestamp from first line and compare the date
@@ -211,7 +215,8 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    root.iconbitmap("ressources/icon.ico")
+    img = tk.Image("photo", file="ressources/icon.gif")
+    root.tk.call("wm", "iconphoto", root._w, img)
 
     # Handle windows close events
     root.protocol("WM_DELETE_WINDOW", delete_window)
