@@ -1,7 +1,7 @@
 import tkinter as tk
 import Database as db
 
-BIG_FONT = "arial 20"
+BIG_FONT = "arial 17"
 
 
 class Page(tk.Frame):

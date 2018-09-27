@@ -96,7 +96,7 @@ def test_for_serial(win, ser, prev_id):
         call.id_call.ser = ser
         try:
             id_card = "{}".format(ser.readline().decode("utf-8"))
-            print('\'' + id_card + '\'')
+            #print('\'' + id_card + '\'')
             try:
                 # Get name by id_card
                 int(id_card)
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    img = tk.Image("photo", file="ressources/icon.gif")
+    img = tk.Image("photo", file="/home/pi/rfid_access/ressources/icon.gif")
     root.tk.call("wm", "iconphoto", root._w, img)
 
     # Handle windows close events

@@ -7,7 +7,7 @@ from Page import *
 import os
 import id_call as call
 import serial
-from main import test_for_serial
+from rfid_access import test_for_serial
 
 
 class Register(Page):
