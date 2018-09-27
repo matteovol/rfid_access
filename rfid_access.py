@@ -215,7 +215,7 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    img = tk.Image("photo", file="/home/pi/rfid_access/ressources/icon.gif")
+    img = tk.Image("photo", file="/home/mvolpi/rfid_access/ressources/icon.gif")
     root.tk.call("wm", "iconphoto", root._w, img)
 
     # Handle windows close events
