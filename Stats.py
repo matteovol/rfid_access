@@ -105,7 +105,10 @@ class Stats(Page):
         i = 4
         for d in tab_day:
             try:
-                d.set(week_tab[i][j])
+                if j == 4:
+                    d.set(str(int(float(week_tab[i][j]))) + "h" + str(int(int(week_tab[i][j].split('.')[1]) * 60 / 100)))
+                else:
+                    d.set(week_tab[i][j])
             except IndexError:
                 pass
             i -= 1
