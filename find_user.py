@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import tkinter as tk
 import tkinter.messagebox as ms
 import Database as db
@@ -103,7 +105,6 @@ if __name__ == '__main__':
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    root.iconbitmap("ressources/icon.ico")
 
     # Handle windows close events
     root.protocol("WM_DELETE_WINDOW", delete_window)
