@@ -1,6 +1,7 @@
 import sqlite3 as sq
 import time
 import tkinter as tk
+import datetime
 from hashlib import sha256
 
 
@@ -248,7 +249,7 @@ class Database:
         """Add an empty line in daily table to prevent empty stats"""
 
         self.curs.execute("INSERT INTO daily(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)",
-                          (None, None, None, None, 0, None))
+                          (0, "void", round(int(time.time()), 3), 0, 0, "void"))
         self.conn.commit()
 
     def clear_daily_table(self):

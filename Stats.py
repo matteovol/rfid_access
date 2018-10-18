@@ -110,7 +110,7 @@ class Stats(Page):
                 else:
                     d.set(week_tab[i][j])
             except IndexError:
-                pass
+                raise IndexError
             i -= 1
 
     def lift_stats(self):

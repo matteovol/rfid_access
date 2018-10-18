@@ -7,7 +7,8 @@ import serial
 import serial.serialutil
 import id_call as call
 import datetime
-from collections import Counter
+import time
+from collections import Counter, OrderedDict
 
 
 class App(tk.Frame):
@@ -146,20 +147,31 @@ def update_database():
     """Compute stats from daily table and store it in annual table"""
 
     stats = bdd.get_daily_stats()
-    try:
-        del stats[0]
-    except IndexError:
-        return
 
     bdd.create_annual_table()
+
     # Get timestamp from first line and compare the date
     date = datetime.datetime.now().strftime("%d-%m-%Y")
     try:
         base_stamp = stats[0][2]
     except IndexError:
+        bdd.add_empty_line()
         return
     base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%d-%m-%Y")
     # print(date, base_stamp)
+
+    last_entries = bdd.sort_annual_table()
+    last_date = last_entries[0][1]
+    if datetime.datetime.today().weekday() == 0:
+        offset = 3600 * 24 * 2
+    else:
+        offset = 0
+    future_date = datetime.datetime.fromtimestamp(time.time() - 3600 * 24 - offset).strftime("%d-%m-%Y")
+    if len(stats) == 1 and last_date != future_date:
+        bdd.set_daily_stats(future_date, 0, 0, 0, None)
+        bdd.clear_daily_table()
+        bdd.add_empty_line()
+        return
 
     # If date is yesterday, compute stats and store it
     if base_stamp != date:
@@ -186,12 +198,13 @@ def update_database():
         age /= len(uuser_list)
         round(age, 1)
         town_dict = Counter(town_list)
-        town_list = list(town_dict.keys())
+        town_list = OrderedDict(sorted(town_dict.items(), key=lambda t: t[0]))
         i = 0
         town = ""
         while i < 2 and i < len(town_list):
-            town += town_list[i] + ' '
+            town += list(town_list)[i] + ' '
             i += 1
+        print(town)
 
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
