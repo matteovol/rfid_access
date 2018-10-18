@@ -85,8 +85,6 @@ class Database:
             y = (hs / 2) - (height / 2)
             win_set_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
             win_set_pass.resizable(height=False, width=False)
-#            img = tk.Image("photo", file="ressources/icon.gif")
-#            win_set_pass.tk.call("wm", "iconphoto", win_set_pass._w, img)
             pwd_entry = tk.Entry(win_set_pass, show='*')
 
             def on_ok():
