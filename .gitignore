@@ -2,6 +2,7 @@ venv/
 pics/
 __pycache__/
 *.db
+stats
 
 # User-specific stuff
 .idea/**/workspace.xml
