@@ -217,12 +217,12 @@ class Database:
         date = time.time()
         self.curs.execute("""SELECT * FROM daily WHERE id=?""", (id_card,))
         tab = self.curs.fetchall()
-        print(tab)
+        #print(tab)
         tab_time = []
         for t in tab:
             tab_time.append(t[2])
         max_time = round(max(tab_time), 3)
-        print(max_time)
+        #print(max_time)
         self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
                           (round(date, 3),))
         self.conn.commit()

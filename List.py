@@ -8,7 +8,7 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
-        global listbox, var_add, var_del, combo_add, combo_del, bdd
+        global listbox, var_add, var_del, combo_add, combo_del, bdd, var_count
         Page.__init__(self, *args, **kwargs)
 
         bdd = Page.get_bdd(self)
@@ -39,6 +39,8 @@ class List(Page):
         fr5.grid(row=5, column=4)
         fr6 = tk.Frame(self, width=1, height=15)
         fr6.grid(row=8, column=4)
+        fr7 = tk.Frame(self, width=1, height=15)
+        fr7.grid(row=10, column=4)
 
         # Init labels
         label_add = tk.Label(self, text="Ajouter un élève à la liste", font=BIG_FONT)
@@ -54,8 +56,13 @@ class List(Page):
         self.combo_del = combo_del
 
         # Init buttons to interact with the list
-        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=self.add_to_list)
-        button_del = tk.Button(self, text="Retirer", font=BIG_FONT, command=self.del_from_list)
+        button_add = tk.Button(self, text="Ajouter", font=BIG_FONT, command=lambda : self.add_to_list(self))
+        button_del = tk.Button(self, text="Retirer", font=BIG_FONT, command=lambda : self.del_from_list(self))
+
+        # Init student counter
+        var_count = tk.StringVar()
+        var_count.set("Nombre de présents : 0")
+        label_counter = tk.Label(self, textvariable=var_count, font=BIG_FONT)
 
         # Setup widgets on the screen
         label_add.grid(row=1, column=4)
@@ -64,6 +71,7 @@ class List(Page):
         label_del.grid(row=6, column=4)
         combo_del.grid(row=7, column=4)
         button_del.grid(row=9, column=4)
+        label_counter.grid(row=11, column=4)
 
         # Setup new tab order
         new_order = (combo_add, button_add, combo_del, button_del)
@@ -99,6 +107,14 @@ class List(Page):
         # Update the delete combo box
         values_del = listbox.get(0, tk.END)
         combo_del.config(values=values_del)
+
+        all = bdd.get_daily_stats()
+        count = 0
+        for i in all:
+            if i[3] == None:
+                count += 1
+        var_count.set("Nombre de présents : " + str(count))
+
         self.lift()
 
     @staticmethod
@@ -112,7 +128,7 @@ class List(Page):
                 listbox.insert(tk.END, s[1])
 
     @staticmethod
-    def add_to_list():
+    def add_to_list(self):
 
         """Manually add someone to the list"""
 
@@ -138,8 +154,10 @@ class List(Page):
         var_add.set("")
         combo_del.config(values=val_list)
 
+        self.lift_list()
+
     @staticmethod
-    def del_from_list():
+    def del_from_list(self):
 
         """Manually remove someone from the list"""
 
@@ -161,6 +179,8 @@ class List(Page):
         var_del.set("")
         val_list = listbox.get(0, tk.END)
         combo_del.config(values=val_list)
+
+        self.lift_list()
 
     @staticmethod
     def selection(_evt):
