@@ -160,13 +160,19 @@ def update_database():
     base_stamp = datetime.datetime.fromtimestamp(base_stamp).strftime("%d-%m-%Y")
     # print(date, base_stamp)
 
-    last_entries = bdd.sort_annual_table()
-    last_date = last_entries[0][1]
     if datetime.datetime.today().weekday() == 0:
         offset = 3600 * 24 * 2
     else:
         offset = 0
     future_date = datetime.datetime.fromtimestamp(time.time() - 3600 * 24 - offset).strftime("%d-%m-%Y")
+    last_entries = bdd.sort_annual_table()
+    try:
+        last_date = last_entries[0][1]
+    except IndexError:
+        bdd.set_daily_stats(future_date, 0, 0, 0, None)
+        bdd.clear_daily_table()
+        bdd.add_empty_line()
+        return
     if len(stats) == 1 and last_date != future_date:
         bdd.set_daily_stats(future_date, 0, 0, 0, None)
         bdd.clear_daily_table()
@@ -178,9 +184,14 @@ def update_database():
 
         # Compute hour average
         moy = 0
-        for s in stats:
-            moy += round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2)
-        moy /= len(stats)
+        count = 0
+        try:
+            for s in stats:
+                moy += round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2)
+                count += 1
+        except TypeError:
+            pass
+        moy /= (len(stats) - count)
 
         # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
@@ -228,7 +239,7 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    img = tk.Image("photo", file="/home/mvolpi/rfid_access/ressources/icon.gif")
+    img = tk.Image("photo", file=os.getenv("HOME") + "/rfid_access/ressources/icon.gif")
     root.tk.call("wm", "iconphoto", root._w, img)
 
     # Handle windows close events
