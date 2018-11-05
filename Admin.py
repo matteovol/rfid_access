@@ -104,7 +104,7 @@ class Admin(Page):
 
             tk.Label(win_pass, text="Mot de passe:").pack()
             pwd_entry.pack(side="top")
-            pwd_entry.bind("<Return>", lambda ok: on_ok())
+            pwd_entry.bind("<Return>", on_ok)
             tk.Button(win_pass, command=on_ok, text="OK").pack(side="top")
             win_pass.mainloop()
 

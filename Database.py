@@ -100,8 +100,8 @@ class Database:
 
             tk.Label(win_set_pass, text="Aucun mot de passe administrateur n'est défini,\nveuillez en entrer un:").pack()
             pwd_entry.pack(side="top")
-            pwd_entry.bind('<Return>', lambda ok: on_ok())
-            tk.Button(win_set_pass, command=lambda ok: on_ok(), text="OK").pack(side="top")
+            pwd_entry.bind('<Return>', on_ok)
+            tk.Button(win_set_pass, command=on_ok, text="OK").pack(side="top")
             win_set_pass.mainloop()
             return False
         else:
