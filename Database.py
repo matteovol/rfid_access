@@ -2,6 +2,7 @@ import sqlite3 as sq
 import time
 import tkinter as tk
 import datetime
+import os
 from hashlib import sha256
 
 
@@ -10,7 +11,11 @@ class Database:
     """Class for database navigation"""
 
     def __init__(self):
-        self.conn = sq.connect("rfid_access.db")
+        try:
+            os.mkdir(os.environ['HOME'] + "/.rfid_access")
+        except IOError:
+            pass
+        self.conn = sq.connect(os.environ['HOME'] + "/.rfid_access/rfid_access.db")
         self.curs = self.conn.cursor()
 
     def create_user_table(self):
