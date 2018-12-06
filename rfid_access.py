@@ -53,7 +53,7 @@ class App(tk.Frame):
         enum_b.grid(row=0, column=1)
         stat_b.grid(row=0, column=2)
         admin_b.grid(row=0, column=3)
-        reg.show()
+        enum.show()
 
 
 def delete_window():
@@ -184,14 +184,15 @@ def update_database():
 
         # Compute hour average
         moy = 0
-        count = 0
+        count = 1
         try:
-            for s in stats:
-                moy += round(int(str(s[3] - s[2]).split('.')[0]) / 3600, 2)
+            while count <= len(stats) - 1:
+                moy += round(int(str(stats[count][3] - stats[count][2]).split('.')[0]) / 3600, 2)
                 count += 1
         except TypeError:
             pass
-        moy /= (len(stats) - count)
+        count -= 1
+        moy /= count
 
         # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
@@ -210,6 +211,7 @@ def update_database():
         round(age, 1)
         town_dict = Counter(town_list)
         town_list = OrderedDict(sorted(town_dict.items(), key=lambda t: t[0]))
+        print(town_dict, town_list)
         i = 0
         town = ""
         while i < 2 and i < len(town_list):
@@ -239,7 +241,7 @@ if __name__ == "__main__":
     y = (hs / 2) - (height / 2)
     root.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
     root.resizable(width=False, height=False)
-    img = tk.Image("photo", file=os.getenv("HOME") + "/rfid_access/ressources/icon.gif")
+    img = tk.Image("photo", file=os.getenv("HOME") + "/.rfid_access/ressources/icon.gif")
     root.tk.call("wm", "iconphoto", root._w, img)
 
     # Handle windows close events
