@@ -1,5 +1,6 @@
 from Page import *
 from tkinter import ttk
+import tkinter.messagebox as ms
 import calendar
 
 
@@ -110,7 +111,8 @@ class Stats(Page):
                 else:
                     d.set(week_tab[i][j])
             except IndexError:
-                raise IndexError
+                ms.showerror("Error", "Pas de données pour la semaine passée")
+                return
             i -= 1
 
     def lift_stats(self):
