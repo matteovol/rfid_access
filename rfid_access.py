@@ -137,7 +137,8 @@ def get_unique_user(stats):
 
     li = []
     for s in stats:
-        li.append(s[1])
+        if s[1] != "void":
+            li.append(s[1])
     li = list(set(li))
     return li
 
@@ -200,6 +201,7 @@ def update_database():
 
         # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
+        # print(uuser_list)
         nb_user = len(uuser_list)
 
         # Compute average age and most common town represented
@@ -226,6 +228,10 @@ def update_database():
 
 
 if __name__ == "__main__":
+
+    if datetime.datetime.today().weekday() == 5 or datetime.datetime.today().weekday() == 6:
+        exit(0)
+
     # Setup the main window
     root = tk.Tk()
     call.id_call.set_root(root)
