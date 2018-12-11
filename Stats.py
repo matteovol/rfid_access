@@ -111,7 +111,7 @@ class Stats(Page):
                 else:
                     d.set(week_tab[i][j])
             except IndexError:
-                ms.showerror("Error", "Pas de données pour la semaine passée")
+                ms.showerror("Error", "Pas asser de donnees pour la semaine passee")
                 return
             i -= 1
 

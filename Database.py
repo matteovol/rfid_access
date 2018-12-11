@@ -1,7 +1,6 @@
 import sqlite3 as sq
 import time
 import tkinter as tk
-import datetime
 import os
 from hashlib import sha256
 

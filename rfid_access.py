@@ -89,7 +89,7 @@ def test_for_serial(win, ser, prev_id):
         try:
             ser = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=0)
         except serial.serialutil.SerialException:
-            print("La connexion n'as pas pu être effectuée")
+            print("La connexion n'as pas pu etre effectuee")
             ser = None
 
     # Read serial port
