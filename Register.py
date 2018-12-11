@@ -81,6 +81,7 @@ class Register(Page):
 
         """Get the id from card"""
 
+        ms.showinfo("Info", "Veuillez passer la carte sur le capteur.")
         while True:
             if call.id_call.ser is not None:
                 try:
