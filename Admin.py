@@ -1,8 +1,8 @@
-from Page import *
 from hashlib import sha256
 import tkinter.messagebox as ms
 from tkinter import ttk
 import tkinter.filedialog as fd
+from Page import *
 
 
 class Admin(Page):
@@ -84,11 +84,11 @@ class Admin(Page):
             y = (hs / 2) - (height / 2)
             win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
             win_pass.resizable(height=False, width=False)
-#            img = tk.Image("photo", file="ressources/icon.gif")
-#            win_pass.tk.call("wm", "iconphoto", win_pass._w, img)
+            # img = tk.Image("photo", file="ressources/icon.gif")
+            # win_pass.tk.call("wm", "iconphoto", win_pass._w, img)
             pwd_entry = tk.Entry(win_pass, show='*')
 
-            def on_ok():
+            def on_ok(evt):
 
                 """Check the password's validity"""
 
@@ -96,11 +96,11 @@ class Admin(Page):
                 _password = pwd_entry.get()
                 hash_admin = bdd.get_admin_hash()
                 hash_passwd = sha256(_password.encode()).hexdigest()
+                win_pass.destroy()
                 if str(hash_passwd) == hash_admin:
                     self.lift()
                 else:
                     ms.showerror("Error", "Bad password")
-                win_pass.destroy()
 
             tk.Label(win_pass, text="Mot de passe:").pack()
             pwd_entry.pack(side="top")
@@ -128,7 +128,7 @@ class Admin(Page):
                                                     ("all files", "*.*")])
         file = open(file_name, "w")
         users = bdd.get_user_table()
-        file.write("id,name,age,classe,commune\n")
+        file.write("id,nom,age,classe,commune\n")
         for u in users:
             i = 0
             while i < len(u) - 1:
@@ -147,9 +147,9 @@ class Admin(Page):
                                                     ("all files", "*.*")])
         file = open(file_name, "w")
         stats = bdd.get_annual_table()
-        file.write("id,date,nomdre utilisateur,age moyen,temps moyen,commune\n")
+        file.write("date,nombre utilisateur,age moyen,temps moyen (en heure),commune\n")
         for s in stats:
-            i = 0
+            i = 1
             while i < len(s):
                 file.write(str(s[i]) + ",")
                 i += 1
@@ -177,7 +177,7 @@ class Admin(Page):
         # Setup window
         win_del = tk.Tk()
         win_del.title("")
-        width = 200
+        width = 300
         height = 100
         ws = win_del.winfo_screenwidth()
         hs = win_del.winfo_screenheight()
