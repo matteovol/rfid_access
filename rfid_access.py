@@ -217,7 +217,10 @@ def update_database():
         round(age, 1)
         town_dict = Counter(town_list)
         town_list = town_dict.most_common(2)
-        town = town_list[0][0] + ' ' + town_list[1][0]
+        try:
+            town = town_list[0][0] + ' ' + town_list[1][0]
+        except IndexError:
+            town = town_list[0][0]
         #print(town)
 
         # Clear daily table and store data in annual
