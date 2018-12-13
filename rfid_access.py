@@ -192,7 +192,11 @@ def update_database():
         except TypeError:
             pass
         count -= 1
-        moy /= count
+        try:
+            moy /= count
+        except ZeroDivisionError:
+            bdd.set_daily_stats(base_stamp, 0, 0, 0, "")
+            return
 
         # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
@@ -210,13 +214,14 @@ def update_database():
         age /= len(uuser_list)
         round(age, 1)
         town_dict = Counter(town_list)
-        town_list = OrderedDict(sorted(town_dict.items(), key=lambda t: t[0]))
+        town_list = town_dict.most_common(2)
+        #town_list = OrderedDict(sorted(town_dict.items(), key=lambda t: t[0]))
         print(town_dict, town_list)
-        i = 0
-        town = ""
-        while i < 2 and i < len(town_list):
-            town += list(town_list)[i] + ' '
-            i += 1
+#        i = 0
+        town = town_list[0][0] + ' ' + town_list[1][0]
+#        while i < 2 and i < len(town_list):
+#            town += list(town_list)[i] + ' '
+#            i += 1
         print(town)
 
         # Clear daily table and store data in annual
