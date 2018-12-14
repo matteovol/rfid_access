@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
+import datetime
+import time
+from collections import Counter
+import serial
+import serial.serialutil
 from Register import *
 from Admin import *
 from Stats import *
 from List import *
-import serial
-import serial.serialutil
 import id_call as call
-import datetime
-import time
-from collections import Counter, OrderedDict
 
 
 class App(tk.Frame):
