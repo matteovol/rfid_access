@@ -60,6 +60,15 @@ def delete_window():
 
     """Function handle the close events"""
 
+    stats = bdd.get_daily_stats()
+    i = 0
+    index_not_end = []
+    while i < len(stats):
+        if stats[i][3] is None:
+            index_not_end.append(stats[i][0])
+        i += 1
+    for index in index_not_end:
+        bdd.store_leave_by_id(index)
     bdd.close_db()
     root.destroy()
 
@@ -196,7 +205,7 @@ def update_database():
         try:
             moy /= count
         except ZeroDivisionError:
-            bdd.set_daily_stats(base_stamp, 0, 0, 0, "")
+            bdd.set_daily_stats(base_stamp, 0, 0, 0, None)
             return
 
         # Get number of unique user the previous day
