@@ -215,14 +215,8 @@ def update_database():
         round(age, 1)
         town_dict = Counter(town_list)
         town_list = town_dict.most_common(2)
-        #town_list = OrderedDict(sorted(town_dict.items(), key=lambda t: t[0]))
-        print(town_dict, town_list)
-#        i = 0
         town = town_list[0][0] + ' ' + town_list[1][0]
-#        while i < 2 and i < len(town_list):
-#            town += list(town_list)[i] + ' '
-#            i += 1
-        print(town)
+        #print(town)
 
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
