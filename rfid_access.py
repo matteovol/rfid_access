@@ -53,7 +53,7 @@ class App(tk.Frame):
         enum_b.grid(row=0, column=1)
         stat_b.grid(row=0, column=2)
         admin_b.grid(row=0, column=3)
-        enum.show()
+        enum.lift_list()
 
 
 def delete_window():
@@ -90,6 +90,7 @@ def test_for_serial(win, ser, prev_id):
 
     """Listener for serial port"""
 
+    global enum
     listbox = List.get_list(call.id_call.enum)
     b = call.id_call.bdd
 
@@ -122,6 +123,7 @@ def test_for_serial(win, ser, prev_id):
                     elif prev_id != id_card and in_list is True:
                         listbox.delete(index)
                         b.store_leave_by_id(id_card)
+                    enum.lift_list()
 
                     # Update other widgets
                     val_list = listbox.get(0, tk.END)
