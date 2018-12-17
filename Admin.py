@@ -88,7 +88,7 @@ class Admin(Page):
             # win_pass.tk.call("wm", "iconphoto", win_pass._w, img)
             pwd_entry = tk.Entry(win_pass, show='*')
 
-            def on_ok(evt):
+            def on_ok():
 
                 """Check the password's validity"""
 
@@ -102,9 +102,12 @@ class Admin(Page):
                 else:
                     ms.showerror("Error", "Bad password")
 
+            def on_ok_return(evt):
+                on_ok()
+
             tk.Label(win_pass, text="Mot de passe:").pack()
             pwd_entry.pack(side="top")
-            pwd_entry.bind("<Return>", on_ok)
+            pwd_entry.bind("<Return>", lambda evt: on_ok_return(evt))
             tk.Button(win_pass, command=on_ok, text="OK").pack(side="top")
             win_pass.mainloop()
 
