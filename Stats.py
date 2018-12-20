@@ -1,7 +1,7 @@
+import datetime
+import tkinter.messagebox as ms
 from Page import *
 from tkinter import ttk
-import tkinter.messagebox as ms
-import calendar
 
 
 class Stats(Page):
@@ -9,7 +9,10 @@ class Stats(Page):
     """Page where all the stats collected are listed"""
 
     def __init__(self, *args, **kwargs):
-        global var_nb_user, bdd, var_combo, var_mon, var_tue, var_wen, var_thi, var_fri
+
+        """Init method for Stats class"""
+
+        global var_nb_user, bdd, var_combo, var_val_d1, var_val_d2, var_val_d3, var_val_d4, var_val_d5, var_d1, var_d2, var_d3, var_d4, var_d5
         Page.__init__(self, *args, **kwargs)
 
         bdd = Page.get_bdd(self)
@@ -18,28 +21,33 @@ class Stats(Page):
         var_nb_user = tk.StringVar()
         var_nb_user.set(str(bdd.get_number_user() - 1))
         var_title = tk.StringVar()
-        var_title.set("Statistique sur la semaine passée")
-        var_mon = tk.StringVar()
-        var_tue = tk.StringVar()
-        var_wen = tk.StringVar()
-        var_thi = tk.StringVar()
-        var_fri = tk.StringVar()
+        var_title.set("Statistique des 5 derniers jours d'ouverture")
+        var_val_d1 = tk.StringVar()
+        var_val_d2 = tk.StringVar()
+        var_val_d3 = tk.StringVar()
+        var_val_d4 = tk.StringVar()
+        var_val_d5 = tk.StringVar()
+        var_d1 = tk.StringVar()
+        var_d2 = tk.StringVar()
+        var_d3 = tk.StringVar()
+        var_d4 = tk.StringVar()
+        var_d5 = tk.StringVar()
         var_combo = tk.StringVar()
 
         # Init label
         label_nb_user = tk.Label(self, text="Nombre d'inscrits :", font=BIG_FONT)
         label_user_var = tk.Label(self, textvariable=var_nb_user, font=BIG_FONT)
         label_title = tk.Label(self, textvariable=var_title, font=BIG_FONT)
-        label_mon = tk.Label(self, text="Lundi :", font=BIG_FONT)
-        label_tue = tk.Label(self, text="Mardi :", font=BIG_FONT)
-        label_wen = tk.Label(self, text="Mercredi :", font=BIG_FONT)
-        label_thi = tk.Label(self, text="Jeudi :", font=BIG_FONT)
-        label_fri = tk.Label(self, text="Vendredi :", font=BIG_FONT)
-        label_val_mon = tk.Label(self, textvariable=var_mon, font=BIG_FONT)
-        label_val_tue = tk.Label(self, textvariable=var_tue, font=BIG_FONT)
-        label_val_wen = tk.Label(self, textvariable=var_wen, font=BIG_FONT)
-        label_val_thi = tk.Label(self, textvariable=var_thi, font=BIG_FONT)
-        label_val_fri = tk.Label(self, textvariable=var_fri, font=BIG_FONT)
+        label_mon = tk.Label(self, textvariable=var_d1, font=BIG_FONT)
+        label_tue = tk.Label(self, textvariable=var_d2, font=BIG_FONT)
+        label_wen = tk.Label(self, textvariable=var_d3, font=BIG_FONT)
+        label_thi = tk.Label(self, textvariable=var_d4, font=BIG_FONT)
+        label_fri = tk.Label(self, textvariable=var_d5, font=BIG_FONT)
+        label_val_mon = tk.Label(self, textvariable=var_val_d1, font=BIG_FONT)
+        label_val_tue = tk.Label(self, textvariable=var_val_d2, font=BIG_FONT)
+        label_val_wen = tk.Label(self, textvariable=var_val_d3, font=BIG_FONT)
+        label_val_thi = tk.Label(self, textvariable=var_val_d4, font=BIG_FONT)
+        label_val_fri = tk.Label(self, textvariable=var_val_d5, font=BIG_FONT)
 
         # Init combobox
         values = ("Age moyen", "Commune", "Nombre d'utilisateur", "Temps moyen")
@@ -57,43 +65,24 @@ class Stats(Page):
         label_wen.place(in_=self, x=500, y=350)
         label_thi.place(in_=self, x=500, y=450)
         label_fri.place(in_=self, x=500, y=550)
-        label_val_mon.place(in_=self, x=650, y=150)
-        label_val_tue.place(in_=self, x=650, y=250)
-        label_val_wen.place(in_=self, x=650, y=350)
-        label_val_thi.place(in_=self, x=650, y=450)
-        label_val_fri.place(in_=self, x=650, y=550)
+        label_val_mon.place(in_=self, x=850, y=150)
+        label_val_tue.place(in_=self, x=850, y=250)
+        label_val_wen.place(in_=self, x=850, y=350)
+        label_val_thi.place(in_=self, x=850, y=450)
+        label_val_fri.place(in_=self, x=850, y=550)
         combo_stat.place(in_=self, x=50, y=150)
         button_validate.place(in_=self, x=134, y=220)
 
     @staticmethod
     def validate():
+
+        """Display stats when validate button is pressed"""
+
         to_see = var_combo.get()
         if len(to_see) < 1:
             return
         tab_first = bdd.sort_annual_table()
-        tab_date = []
-        for t in tab_first:
-            tab_date.append(t[1].split("-"))
-        day = []
-        for i in tab_date:
-            day.append(calendar.weekday(int(i[2]), int(i[1]), int(i[0])))
-        first = None
-        i = 0
-        while i < len(day):
-            if day[i] == 4:
-                first = i
-                break
-            i += 1
-        week_tab = []
-        if first is not None:
-            last = first + 5
-            while first < last:
-                try:
-                    week_tab.append(tab_first[first])
-                except IndexError:
-                    pass
-                first += 1
-        tab_day = [var_mon, var_tue, var_wen, var_thi, var_fri]
+        tab_day = [var_val_d1, var_val_d2, var_val_d3, var_val_d4, var_val_d5]
         j = 0
         if to_see == "Age moyen":
             j = 3
@@ -107,14 +96,39 @@ class Stats(Page):
         for d in tab_day:
             try:
                 if j == 4:
-                    d.set(str(int(float(week_tab[i][j]))) + "h" + str(int(int(str(week_tab[i][j]).split('.')[1]) * 60 / 100)))
+                    d.set('{0:02.0f}h{1:02.0f}'.format(*divmod(tab_first[i][j] * 60, 60)))
                 else:
-                    d.set(week_tab[i][j])
+                    d.set(tab_first[i][j])
             except IndexError:
-                ms.showerror("Error", "Pas asser de donnees pour la semaine passee")
+                ms.showerror("Error", "Pas asser de donnees pour les 5 derniers jours")
                 return
             i -= 1
 
+    @staticmethod
+    def set_days(tab_first):
+
+        """Select last five dates and weekday to display in stat frame"""
+
+        global var_d1, var_d2, var_d3, var_d4, var_d5
+        tab_day = [var_d1, var_d2, var_d3, var_d4, var_d5]
+        weekday = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
+        i = 4
+        j = 1
+        for d in tab_day:
+            split = tab_first[i][j].split('-')
+            curr_day = datetime.datetime(int(split[2]), int(split[1]), int(split[0]))
+            try:
+                temp = weekday[curr_day.weekday()] + "\t" + tab_first[i][j] + ":"
+            except IndexError:
+                ms.showerror("Error", "Pas asser de donnees pour les 5 derniers jours")
+            d.set(temp)
+            i -= 1
+
     def lift_stats(self):
+
+        """Update stats frame and display it"""
+
         var_nb_user.set(str(bdd.get_number_user() - 1))
+        tab_days = bdd.sort_annual_table()
+        self.set_days(tab_days)
         self.lift()
