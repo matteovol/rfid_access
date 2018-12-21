@@ -1,6 +1,5 @@
 import tkinter as tk
 import Database as db
-from font import *
 
 
 class Page(tk.Frame):
@@ -8,6 +7,9 @@ class Page(tk.Frame):
     """Page class, all the page class inherit this one"""
 
     def __init__(self, *args, **kwargs):
+
+        """Init method for Page class"""
+
         tk.Frame.__init__(self, *args, **kwargs)
 
         # Init the database and call the function to create them

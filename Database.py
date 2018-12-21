@@ -10,6 +10,9 @@ class Database:
     """Class for database navigation"""
 
     def __init__(self):
+
+        """Init method for Database class"""
+
         try:
             os.mkdir(os.environ['HOME'] + "/.rfid_access")
         except IOError:
@@ -221,12 +224,10 @@ class Database:
         date = time.time()
         self.curs.execute("""SELECT * FROM daily WHERE id=?""", (id_card,))
         tab = self.curs.fetchall()
-        #print(tab)
         tab_time = []
         for t in tab:
             tab_time.append(t[2])
         max_time = round(max(tab_time), 3)
-        #print(max_time)
         self.curs.execute("UPDATE daily SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
                           (round(date, 3),))
         self.conn.commit()
@@ -323,21 +324,33 @@ class Database:
         self.conn.commit()
 
     def store_enter_log(self, id_card, name, date, age, class_):
+
+        """Store enter time in log table"""
+
         self.curs.execute("""INSERT INTO log(id, name, date_enter, date_leave, age, class) VALUES(?, ?, ?, ?, ?, ?)""",
                           (id_card, name, round(date, 3), None, age, class_))
         self.conn.commit()
 
     def store_leave_log(self, id_card, max_time, date):
+
+        """Store leave time in log table"""
+
         self.curs.execute("UPDATE log SET date_leave=? WHERE id=" + str(id_card) + " AND date_enter=" + str(max_time),
                           (round(date, 3),))
         self.conn.commit()
 
     def get_log_by_date(self, stamp):
+
+        """Search information in log table by date"""
+
         self.curs.execute("SELECT * FROM log WHERE date_enter>=? AND date_enter<=?", (stamp, stamp + 86400))
         table = self.curs.fetchall()
         return table
 
     def get_log_by_name(self, name):
+
+        """Search information in log table by name"""
+
         self.curs.execute("SELECT * FROM log WHERE name=?", (name,))
         table = self.curs.fetchall()
         return table

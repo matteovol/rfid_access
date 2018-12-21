@@ -16,6 +16,9 @@ class App(tk.Frame):
     """Application Class"""
 
     def __init__(self, *args, **kwargs):
+
+        """Init method for App class"""
+
         global reg, enum, bdd
         tk.Frame.__init__(self, *args, **kwargs)
 
@@ -132,7 +135,6 @@ def test_for_serial(win, ser, prev_id):
                     prev_id = id_card
             except ValueError:
                 prev_id = 0
-                pass
         except serial.serialutil.SerialException:
             print("Data could not be read")
             ser = None
@@ -178,6 +180,7 @@ def update_database():
         offset = 0
     future_date = datetime.datetime.fromtimestamp(time.time() - 3600 * 24 - offset).strftime("%d-%m-%Y")
     last_entries = bdd.sort_annual_table()
+
     try:
         last_date = last_entries[0][1]
     except IndexError:
@@ -185,6 +188,7 @@ def update_database():
         bdd.clear_daily_table()
         bdd.add_empty_line()
         return
+
     if len(stats) == 1 and last_date != future_date:
         bdd.set_daily_stats(future_date, 0, 0, 0, None)
         bdd.clear_daily_table()
@@ -212,7 +216,6 @@ def update_database():
 
         # Get number of unique user the previous day
         uuser_list = get_unique_user(stats)
-        # print(uuser_list)
         nb_user = len(uuser_list)
 
         # Compute average age and most common town represented
@@ -232,13 +235,11 @@ def update_database():
             town = town_list[0][0] + ' ' + town_list[1][0]
         except IndexError:
             town = town_list[0][0]
-        #print(town)
 
         # Clear daily table and store data in annual
         bdd.set_daily_stats(base_stamp, nb_user, round(age, 1), round(moy, 2), town)
         bdd.clear_daily_table()
         bdd.add_empty_line()
-        # print(base_stamp, nb_user, age, moy, town)
 
 
 if __name__ == "__main__":

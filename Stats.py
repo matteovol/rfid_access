@@ -1,7 +1,8 @@
 import datetime
 import tkinter.messagebox as ms
-from Page import *
 from tkinter import ttk
+from Page import *
+from font import BIG_FONT
 
 
 class Stats(Page):

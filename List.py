@@ -1,6 +1,7 @@
-from Page import *
 import tkinter.ttk as ttk
 import tkinter.messagebox as ms
+from Page import *
+from font import BIG_FONT
 
 
 class List(Page):
@@ -8,6 +9,9 @@ class List(Page):
     """Page where all the presents users are listed"""
 
     def __init__(self, *args, **kwargs):
+
+        """Init method for List class"""
+
         global listbox, var_add, var_del, combo_add, combo_del, bdd, var_count
         Page.__init__(self, *args, **kwargs)
 
@@ -24,7 +28,7 @@ class List(Page):
         scroll.grid(row=1, column=2, sticky=tk.NS, rowspan=50)
         listbox = tk.Listbox(self, yscrollcommand=scroll.set, width=50, height=16, font=BIG_FONT)
         listbox.bind('<<ListboxSelect>>', self.selection)
-        listbox.bind('<BackSpace>', lambda x: self.del_from_list())
+        listbox.bind('<BackSpace>', self.del_from_list)
         listbox.grid(row=1, column=1, rowspan=50)
         scroll.config(command=listbox.yview)
         self.fill_list()
@@ -108,10 +112,10 @@ class List(Page):
         values_del = listbox.get(0, tk.END)
         combo_del.config(values=values_del)
 
-        all = bdd.get_daily_stats()
+        all_stats = bdd.get_daily_stats()
         count = 0
-        for i in all:
-            if i[3] == None:
+        for i in all_stats:
+            if i[3] is None:
                 count += 1
         var_count.set("Nombre de présents : " + str(count))
 
@@ -127,7 +131,6 @@ class List(Page):
             if s[3] is None:
                 listbox.insert(tk.END, s[1])
 
-    @staticmethod
     def add_to_list(self):
 
         """Manually add someone to the list"""
@@ -156,7 +159,6 @@ class List(Page):
 
         self.lift_list()
 
-    @staticmethod
     def del_from_list(self):
 
         """Manually remove someone from the list"""

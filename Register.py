@@ -1,13 +1,14 @@
 import tkinter.messagebox as ms
 import tkinter.filedialog as fd
 import tkinter.ttk as ttk
+import os
 from PIL import ImageTk
 from PIL import Image
-from Page import *
-import os
-import id_call as call
 import serial
+from Page import *
+import id_call as call
 from rfid_access import test_for_serial
+from font import BIG_FONT
 
 
 class Register(Page):
@@ -15,6 +16,9 @@ class Register(Page):
     """Register page. The inscription form must be fully completed to register someone"""
 
     def __init__(self, *args, **kwargs):
+
+        """Init method for Register class"""
+
         global var_age, var_class, var_first, var_name, image_list, file_name, var_town
         Page.__init__(self, *args, **kwargs)
         image_list = []
@@ -175,7 +179,6 @@ class Register(Page):
                     pass
 
                 # Save the file
-                cur_dir = os.getcwd()
                 name = var_first.get() + " " + var_name.get()
                 bdd = Page.get_bdd(self)
                 ret = bdd.check_existing_user(name)

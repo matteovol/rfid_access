@@ -3,12 +3,17 @@ import tkinter.messagebox as ms
 from tkinter import ttk
 import tkinter.filedialog as fd
 from Page import *
+from font import BIG_FONT
 
 
 class Admin(Page):
+
     """Administration page, a password is required to enter this page"""
 
     def __init__(self, *args, **kwargs):
+
+        """Init method for Admin class"""
+
         global var_actual, var_new, var_confirm, bdd
         Page.__init__(self, *args, **kwargs)
 
@@ -42,7 +47,7 @@ class Admin(Page):
         button_stat_ua = tk.Button(self, text="Supprimer tout les usagers", width=22, height=2, font=BIG_FONT,
                                    command=self.delete_all_users)
         button_stat_pass = tk.Button(self, text="Changer le mot de passe", width=22, font=BIG_FONT,
-                                     command=lambda: self.change_password())
+                                     command=self.change_password)
 
         # Place elements on screen
         button_export_users.place(in_=self, x=100, y=70)
@@ -84,13 +89,11 @@ class Admin(Page):
             y = (hs / 2) - (height / 2)
             win_pass.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
             win_pass.resizable(height=False, width=False)
-            # img = tk.Image("photo", file="ressources/icon.gif")
-            # win_pass.tk.call("wm", "iconphoto", win_pass._w, img)
             pwd_entry = tk.Entry(win_pass, show='*')
 
             def on_ok():
 
-                """Check the password's validity"""
+                """Check the password's validity when ok is pressed"""
 
                 global _password
                 _password = pwd_entry.get()
@@ -103,6 +106,9 @@ class Admin(Page):
                     ms.showerror("Error", "Bad password")
 
             def on_ok_return(evt):
+
+                """Check password validity with enter key"""
+
                 on_ok()
 
             tk.Label(win_pass, text="Mot de passe:").pack()
@@ -129,16 +135,16 @@ class Admin(Page):
         file_name = fd.asksaveasfilename(title="Enregistrer les utilisateurs",
                                          filetypes=[("csv files", ".csv "), ("text files", ".txt"),
                                                     ("all files", "*.*")])
-        file = open(file_name, "w")
+        fstream = open(file_name, "w")
         users = bdd.get_user_table()
-        file.write("id,nom,age,classe,commune\n")
+        fstream.write("id,nom,age,classe,commune\n")
         for u in users:
             i = 0
             while i < len(u) - 1:
-                file.write(str(u[i]) + ",")
+                fstream.write(str(u[i]) + ",")
                 i += 1
-            file.write("\n")
-        file.close()
+            fstream.write("\n")
+        fstream.close()
 
     @staticmethod
     def export_annual():
@@ -148,16 +154,16 @@ class Admin(Page):
         file_name = fd.asksaveasfilename(title="Enregistrer les statistiques",
                                          filetypes=[("csv files", "*.csv"), ("text files", "*.txt"),
                                                     ("all files", "*.*")])
-        file = open(file_name, "w")
+        fstream = open(file_name, "w")
         stats = bdd.get_annual_table()
-        file.write("date,nombre utilisateur,age moyen,temps moyen (en heure),commune\n")
+        fstream.write("date,nombre utilisateur,age moyen,temps moyen (en heure),commune\n")
         for s in stats:
             i = 1
             while i < len(s):
-                file.write(str(s[i]) + ",")
+                fstream.write(str(s[i]) + ",")
                 i += 1
-            file.write("\n")
-        file.close()
+            fstream.write("\n")
+        fstream.close()
 
     @staticmethod
     def get_values():
@@ -172,7 +178,6 @@ class Admin(Page):
             i += 1
         return values
 
-    @staticmethod
     def delete_user(self):
 
         """Open a window to choose an user to delete from the database"""
@@ -188,10 +193,9 @@ class Admin(Page):
         y = (hs / 2) - (height / 2)
         win_del.geometry("{}x{}+{}+{}".format(width, height, int(x), int(y)))
         win_del.resizable(height=False, width=False)
-#        img = tk.Image("photo", file="ressources/icon.gif")
-#        win_del.tk.call("wm", "iconphoto", win_del._w, img)
 
         def delete(name):
+
             """Delete the user from table and show an information message"""
 
             bdd.delete_user(name)
@@ -225,6 +229,8 @@ class Admin(Page):
         confirm = var_confirm.get()
         hash_admin = bdd.get_admin_hash()
         hash_actual = str(sha256(actual.encode()).hexdigest())
+
+        # Check password validity and replace old by new
         if hash_actual == hash_admin:
             if new == confirm:
                 hash_new = str(sha256(new.encode()).hexdigest())
