@@ -1,0 +1,26 @@
+ETAT: RESOLU --> modification de la fenêtre stat
+
+pas lancé depuis plusieurs jours
+
+date: ajd et la dernière dans la liste
+
+on calcule les stats, doit les attribuer au bon jour. celui après le dernier
+--> get la date du dernier jour, compute pour le jour + 1
+
+compute des stats vides pour les jours entre ajd et la dernière fois
+
+si deux dates différents, 
+
+--------------------------------------------------------------------------------+
+ETAT: RESOLU
+
+si les dernières personnes ne sont pas compté comme repartie le lendemain
+(cases de départ non remplies):
+
+avant de calculer les stats, regarder si il y a des cases non remplies, si oui,
+ne pas les compter
+
+les exclure du calcul. Refaire un tableau ou supprimer les cases
+--> mettre les heures de sortie par défaut eau moment où le logiciel se ferme
+
+--------------------------------------------------------------------------------+
